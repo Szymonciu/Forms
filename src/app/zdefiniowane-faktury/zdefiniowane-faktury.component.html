@@ -1,0 +1,34 @@
+<div style="margin-top:50px;padding:20px;width:600px">
+  <mat-tab-group>
+    <mat-tab label="Faktury">
+      <mat-list role="list">
+
+        <mat-list-item class="faktura-lista" *ngFor="let faktura of faktury;let i = index" role="listitem">
+          <a style="width: 100%" (click)="wybierzFakture(faktura)">{{i + 1}}. {{faktura.Nazwa}} : {{faktura.Klient.Nazwa}}</a>
+          <a class="usun-fakture" (click)="usun(faktura)">X</a>
+        </mat-list-item>
+
+      </mat-list>
+    </mat-tab>
+    <mat-tab label="Klienci">
+        <mat-list role="list">
+  
+          <mat-list-item class="faktura-lista-klient" *ngFor="let klient of klienci;let i = index" role="listitem">
+            <a style="width: 100%" (click)="edytujKlienta(klient)">{{i + 1}}. {{klient.Nazwa}} : {{klient.Adres}}</a>
+            <a class="usun-fakture" (click)="usunKlienta(klient)">X</a>
+          </mat-list-item>
+  
+        </mat-list>
+      </mat-tab>
+      <mat-tab label="Produkty">
+          <mat-list role="list">
+    
+            <mat-list-item class="faktura-lista-produkt" *ngFor="let produkt of produkty;let i = index" role="listitem">
+              <a style="width: 100%" (click)="edytujProdukt(produkt)">{{i + 1}}. {{produkt.Nazwa}} : {{produkt.CenaNetto}}</a>
+              <a class="usun-fakture" (click)="usunProdukt(produkt)">X</a>
+            </mat-list-item>
+    
+          </mat-list>
+        </mat-tab>
+  </mat-tab-group>
+</div>

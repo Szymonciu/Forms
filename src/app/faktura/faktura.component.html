@@ -1,0 +1,124 @@
+<button color="warn" mat-raised-button (click)="print()">Wydrukuj</button>
+<button color="primary" mat-raised-button  (click)="back1()">Wstecz</button>
+
+<div id="FakturaPrint" class="faktura-cialo">
+    <h2>Faktura</h2>
+
+    <h4>Nr: {{faktura.NumerFaktury}}</h4>
+
+    <div class="faktura-Srodek">
+        <div style="text-align:right" class="faktura-forma">
+            <p>SPRZEDAWCA:</p>
+            <p>ADRES:</p>
+            <p>NIP:</p>
+
+        </div>
+        <div class="faktura-forma">
+            <p>
+                <span class="faktura-text">{{faktura.Uzytkownik.NazwaFirmy}}</span>
+            </p>
+            <p>
+                <span class="faktura-text">{{faktura.Uzytkownik.Adres}}</span>
+            </p>
+            <p>
+                <span class="faktura-text">{{faktura.Uzytkownik.Nip}}</span>
+            </p>
+        </div>
+
+
+        <div style="padding-right:8px"  class="faktura-forma-prawa">
+            <p>
+                <span class="faktura-text">{{faktura.Klient.NazwaFirmy}}</span>
+            </p>
+            <p>
+                <span class="faktura-text">{{faktura.Klient.Adres}}</span>
+            </p>
+            <p>
+                <span class="faktura-text">{{faktura.Klient.Nip}}</span>
+            </p>
+        </div>
+        <div style="text-align:right" class="faktura-forma-prawa">
+            <p>NABYWCA:</p>
+            <p>ADRES:</p>
+            <p>NIP:</p>
+        </div>
+    </div>
+    <div>
+        <hr>
+    </div>
+    <div class="faktura-Srodek">
+        <div style="text-align:right" class="faktura-forma">
+            <p>DATA WYSTAWIENIA:
+
+            </p>
+            <p>TERMIN PŁATNOŚCI:
+            </p>
+        </div>
+        <div class="faktura-forma">
+            <p>
+                <span class="faktura-text">{{faktura.DataWystawienia | date:"dd/MM/yyyy" }}</span>
+            </p>
+            <p>
+                <span class="faktura-text">{{faktura.DataPlatnosci | date:"dd/MM/yyyy"}}</span>
+            </p>
+        </div>
+        <div style="padding-right:8px" class="faktura-forma-prawa">
+            <p>
+                <span class="faktura-text">{{faktura.FormaPlatnosci}}</span>
+            </p>
+            <p>
+                <span class="faktura-text">{{faktura.Klient.NrKontaBankowego}}</span>
+            </p>
+        </div>
+        <div style="text-align:right" class="faktura-forma-prawa">
+            <p>SPOSÓB PŁATNOŚCI:
+            </p>
+            <p>NUMER KONTA:
+            </p>
+        </div>
+    </div>
+    
+<div class="faktura-tabela">
+        <div class="faktura-tabela-naglowek">
+            <div style="width:6%">Lp.</div>
+            <div style="width:28%">Nazwa</div>
+            <div style="width:6%">Ilość</div>
+            <div style="width:6%">Jm</div>
+            <div style="width:11%">Cena netto</div>
+            <div style="width:11%">Wartość netto</div>
+            <div style="width:8%">Stawka</div>
+            <div style="width:11%">Kwota VAT</div>
+            <div style="width:11%">Wartość brutto</div>
+        </div>
+        <div *ngFor="let produkt of faktura.Produkty;let i = index" class="faktura-tabela-wiersz">
+                <div style="width:6%">{{i + 1 }}</div>
+                <div style="width:28%">{{produkt.Nazwa}}</div>
+                <div style="width:6%">{{produkt.Ilosc}}</div>
+                <div style="width:6%">{{produkt.JednostkaMiary}}</div>
+                <div style="width:11%">{{produkt.CenaNetto}}</div>
+                <div style="width:11%">{{produkt.Ilosc * produkt.CenaNetto}}</div>
+                <div style="width:8%">{{vat * 100}}</div>
+                <div style="width:11%">{{produkt.Ilosc * produkt.CenaNetto * vat}}</div>
+                <div style="width:11%">{{produkt.Ilosc * produkt.CenaNetto * vatCaly}}</div>
+        </div>
+        <div class="faktura-tabela-podsumowanie">
+            <div class="wynik">RAZEM DO ZAPLATY: {{podsumowanie.Brutto}}</div>
+            <div class="szczegoly">
+                    <div style="width:21%">RAZEM:</div>
+                    <div style="width:20%">{{podsumowanie.Netto}}</div>
+                    <div style="width:14%">{{vat * 100}}</div>
+                    <div style="width:20%">{{podsumowanie.Vat}}</div>
+                    <div style="width:22%">{{podsumowanie.Brutto}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faktura-Srodek">
+        <div class="podpis-klient">imie, nazwisko, podpis, osoby upowaznionej do odebrania</div>
+        <div class="podpis-wystawiajacy">imie, nazwisko, podpis, osoby upowaznionej do wystawienia</div>
+    </div>
+
+</div>
+
+
+

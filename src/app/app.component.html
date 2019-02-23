@@ -1,25 +1,29 @@
-<!-- Menu Bar -->
-<div class="ui menu">
-  <div class="ui container">
-    <a href="#" class="header item">
-      <img class="logo"
-           src="assets/images/ng-book-2-minibook.png" />
-      ng-book 2
-    </a>
-    <div class="header item borderless">
-      <h1 class="ui header">
-        Angular Forms
-      </h1>
+<div style="position:absolute;width:100%">
+  <mat-toolbar color="primary">
+    <h1>Fakturowanie</h1>
+  </mat-toolbar>
+</div>
+<div style="width:100%!important;position:absolute;margin-top:60px">
+  <div class="page-header">
+    <div class="navLinks">
+      <a (click)="link='Strona główna'" mat-button [routerLink]="['/dom']">Strona główna</a>
+      <a (click)="link='Nowa faktura'" mat-button [routerLink]="['/nowa']">Nowa faktura</a>
+      <a (click)="link='Zdefiniowane faktury'" mat-button [routerLink]="['/zdefiniowana']">Zdefiniowane faktury</a>
+      <a (click)="link='Historia'" mat-button [routerLink]="['/historyczne']">Historia</a>
+
     </div>
   </div>
-</div>
-
-<div class="ui stackable grid container">
-  <div class="six wide column">
-    <app-sidebar [items]="examples"></app-sidebar>
+  <mat-toolbar style="height:35px!important;">
+    <div style="text-align:center"><strong>{{link}}</strong></div>
+  </mat-toolbar>
+  <div style="position:absolute;right:0px">
+    <app-login></app-login>
   </div>
-
-  <div class="ui main text container ten wide column">
-    <router-outlet></router-outlet>
-  </div>
+  
 </div>
+<div style="position:absolute;top:100px" id="content">
+    <div class="container">
+      <router-outlet></router-outlet>
+
+    </div>
+  </div>

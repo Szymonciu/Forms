@@ -1,0 +1,108 @@
+.faktura-Srodek{
+    margin: 0 auto;
+    padding: 10px;
+    float:left;
+    width: 100%;
+}
+.faktura-cialo{
+    padding: 15px;
+    background-color: white;
+    height:900px;
+    width:750px;
+    z-index: 100;
+    position: absolute;
+
+}
+.faktura-forma{
+    height: 150px;
+    float: left;
+}
+.faktura-forma-prawa{
+    height: 150px;
+    float: right;
+    padding-right: 20px;
+}
+.faktura-Srodek p{
+    font-size: 12px;
+    margin-top: 4px;
+    margin-right: 10px;
+    color: grey;
+}
+.faktura-text{
+    font-size: 13px;
+    margin-top: 4px;
+    margin-right: 4px;
+    color:black;
+}
+.faktura-tabela-naglowek{
+    float: left;
+    width: 100%;
+
+}
+.faktura-tabela-naglowek div{
+    background-color: lightgray;
+    text-align: center;
+    border-right: 1px solid grey;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    float: left;
+    height: 40px;
+}
+.faktura-tabela-wiersz {
+    float: left;
+    width: 100%;
+}
+.faktura-tabela-wiersz div{
+    background-color: white;
+    text-align: center;
+    border-right: 1px solid grey;
+    border-bottom: 1px solid grey;
+    float: left;
+    padding-top:5px;
+    height: 40px;
+}
+.faktura-tabela-podsumowanie{
+    float: left;
+    width: 100%;
+}
+.wynik{
+    background-color:lightblue;
+    width: 47%;
+    padding-top: 10px;
+    height: 50px;
+    text-align: center;
+    float: left;
+}
+.szczegoly{
+    float: left;
+    width: 53%;
+}
+.szczegoly div{
+    background-color:lightgray;
+    text-align: center;
+    
+    height: 50px;
+    padding-top: 10px;
+    float: left;
+}
+.podpis-klient{
+   
+float: left;
+height: 80px;
+width:330px;
+margin-top:20px;
+margin-right:20px;
+border: 1px solid black;
+font-size: 9px;
+color: gray;
+}
+.podpis-wystawiajacy{
+   margin-right:20px;
+   margin-top:20px;
+    float: right;
+    height: 80px;
+    width:330px;
+    border: 1px solid black;
+    font-size: 9px;
+    color: gray;
+    }

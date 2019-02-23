@@ -1,0 +1,36 @@
+.faktury{
+    background-color: indianred;
+}
+
+.faktura-lista.ng-star-inserted:hover{
+    background-color:rgb(123, 201, 123);
+    transition-duration: 0.6s;
+    cursor: pointer;
+}
+.usun-fakture{
+    position: relative;
+    color:red;
+    margin-left:15px;
+}
+.faktura-lista{
+    border-bottom: 1px solid rgb(123, 201, 123);
+}
+
+.faktura-lista-produkt{
+    border-bottom: 1px solid rgb(124, 165, 211);
+}
+
+.faktura-lista-klient{
+    border-bottom: 1px solid rgb(250, 197, 100);
+}
+
+.faktura-lista-produkt.ng-star-inserted:hover{
+    background-color: rgb(124, 165, 211);
+    transition-duration: 0.6s;
+    cursor: pointer;
+}
+.faktura-lista-klient.ng-star-inserted:hover{
+    background-color: rgb(250, 197, 100);
+    transition-duration: 0.6s;
+    cursor: pointer;
+}
