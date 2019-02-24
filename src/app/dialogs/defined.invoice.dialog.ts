@@ -1,37 +1,23 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, OnInit, Inject } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { FormGroup, FormBuilder } from "@angular/forms";
 
 @Component({
-  template: `
-  <form [formGroup]="form" (ngSubmit)="submit(form)">
-  <h1 mat-dialog-title>Podaj nazwe dla faktury</h1>
-  <mat-dialog-content>
-    <mat-form-field>
-      <input matInput formControlName="filename" placeholder="Nazwa">
-    </mat-form-field>
-  </mat-dialog-content>
-  <mat-dialog-actions>
-    <button mat-button type="submit">Zapisz</button>
-    <button mat-button type="button" mat-dialog-close>Anuluj</button>
-  </mat-dialog-actions>
-</form>
-  `
+  templateUrl: "defined.invoice.dialog.html"
 })
 export class DefinedInvoiceDialog implements OnInit {
-
   form: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
     private dialogRef: MatDialogRef<DefinedInvoiceDialog>,
     @Inject(MAT_DIALOG_DATA) private data
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      filename: ''
-    })
+      filename: ""
+    });
   }
 
   submit(form) {
