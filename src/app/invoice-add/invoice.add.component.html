@@ -1,29 +1,35 @@
 <div style="margin-top:10px;padding:20px">
   <mat-tab-group>
     <mat-tab label="Nowa faktura">
-      <div> 
-        <div *ngIf="brakKlienta"><p style="color:red">Dodaj klienta w zakladce Nowy klient</p></div>
-        <div *ngIf="brakProduktu"><p style="color:red">Dodaj produkt w zakladce Nowy produkt</p></div>
+      <div>
+        <div *ngIf="noClients">
+          <p style="color:red">Dodaj klienta w zakladce Nowy klient</p>
+        </div>
+        <div *ngIf="noProducts">
+          <p style="color:red">Dodaj produkt w zakladce Nowy produkt</p>
+        </div>
 
-        <h2>{{nrFaktury}}</h2>
+        <h2>{{invoiceNumber}}</h2>
         <div style="float:left">
-        <mat-form-field style="margin-right:10px;width: 90px" color="warn">
-          <input color="warn" (change)="ustawVat(vat);przelicz()" matInput placeholder="Procent Vat" type="number" [(ngModel)]='vat'>
-        </mat-form-field>
-      </div>
+          <mat-form-field style="margin-right:10px;width: 90px" color="warn">
+            <input color="warn" (change)="setVat(vat);calculate()" matInput placeholder="Procent Vat" type="number"
+              [(ngModel)]='vat'>
+          </mat-form-field>
+        </div>
         <div style="margin-bottom:20px">
           <mat-toolbar>
             <div style="padding:10px">
-              <p>Nip: {{wybranyKlient.Nip}}</p>
-              <p>Nazwa firmy: {{wybranyKlient.NazwaFirmy}}</p>
-              <p>Adres: {{wybranyKlient.Adres}}</p>
+              <p>Nip: {{choosedClient.TaxId}}</p>
+              <p>Nazwa firmy: {{choosedClient.CompanyName}}</p>
+              <p>Adres: {{choosedClient.Address}}</p>
             </div>
             <mat-toolbar-row>
               <mat-form-field class="example-full-width">
-                <input (click)="dopiszKlienta()" type="text" placeholder="Klient" aria-label="text" matInput [matAutocomplete]="auto">
+                <input (click)="appendClient()" type="text" placeholder="Klient" aria-label="text" matInput
+                  [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
-                  <mat-option (click)="wybierzKlienta(klient)" *ngFor="let klient of klienci" [value]="klient.Nazwa">
-                    {{klient.Nazwa}}
+                  <mat-option (click)="chooseClient(client)" *ngFor="let client of clients" [value]="client.Name">
+                    {{client.Name}}
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
@@ -33,42 +39,42 @@
         <br>
         <br>
         <mat-form-field style="margin-right: 150px">
-          <input id="dateTo" matInput placeholder="Data płatności" type="date" [(ngModel)]='komendaStworzeniaFaktury.DataPlatnosci'>
+          <input id="dateTo" matInput placeholder="Data płatności" type="date" [(ngModel)]='invoiceAddCommand.PaymentDate'>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Data wystawienia" type="date" [(ngModel)]='komendaStworzeniaFaktury.DataWystawienia'>
+          <input matInput placeholder="Data wystawienia" type="date" [(ngModel)]='invoiceAddCommand.CreatedDate'>
         </mat-form-field>
         <br>
         <mat-form-field style="margin-right: 150px!important">
-          <input matInput placeholder="Forma płatności" type="text" [(ngModel)]='komendaStworzeniaFaktury.FormaPlatnosci'>
+          <input matInput placeholder="Forma płatności" type="text" [(ngModel)]='invoiceAddCommand.PaymentType'>
         </mat-form-field>
         <mat-form-field>
-          <mat-select (click)="dopiszProdukt()" placeholder="Produkty" [formControl]="toppings" multiple>
+          <mat-select (click)="appendProduct()" placeholder="Produkty" [formControl]="toppings" multiple>
             <mat-select-trigger>
               {{toppings.value ? toppings.value[0] : ''}}
               <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
                 (+{{toppings.value.length - 1}} others)
               </span>
             </mat-select-trigger>
-            <mat-option (click)="wybierzProdukty(produkt)" *ngFor="let produkt of produkty" [value]="produkt.Nazwa">{{produkt.Nazwa}}</mat-option>
+            <mat-option (click)="chooseProducts(product)" *ngFor="let product of products" [value]="product.Name">{{product.Name}}</mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-list *ngFor="let produkt of produktyWybrane" style="padding:10px;border-radius:5px;border: 1px solid #3f51b5;margin-bottom:4px"
+        <mat-list *ngFor="let product of choosedProducts" style="padding:10px;border-radius:5px;border: 1px solid #3f51b5;margin-bottom:4px"
           color="warn" role="list">
 
           <mat-list-item color="warn" role="listitem">
             <mat-form-field style="margin-right:10px;width: 60px" color="warn">
-              <input color="warn" (change)="przelicz()" matInput placeholder="Ilosc" type="number" [(ngModel)]='produkt.Ilosc'>
+              <input color="warn" (change)="calculate()" matInput placeholder="Ilosc" type="number" [(ngModel)]='product.Quantity'>
             </mat-form-field>
-            <h3 style="float:right">{{produkt.Nazwa}}</h3>
+            <h3 style="float:right">{{product.Name}}</h3>
           </mat-list-item>
           <mat-list-item>
             <span>Wartość Vat:
-              <strong>{{ produkt.Ilosc * produkt.CenaNetto * procentVat}}</strong>
+              <strong>{{ product.Quantity * product.NettoPrice * vatPercent}}</strong>
             </span>
             <span style="margin-left:10px">Wartość Brutto:
-              <strong>{{ produkt.Ilosc * produkt.CenaNetto * procentVatCaly}} </strong>
+              <strong>{{ product.Quantity * product.NettoPrice * vatPercentOverall}} </strong>
             </span>
           </mat-list-item>
         </mat-list>
@@ -76,17 +82,17 @@
         <mat-toolbar style="height:auto!important" color="primary">
           <div style="padding:10px">
             <p>Faktura - podsumowanie:</p>
-            <p>Kwota netto: {{podsumowanie.Netto}}</p>
+            <p>Kwota netto: {{summary.Netto}}</p>
 
-            <p>Podatek vat: {{podsumowanie.Vat}}</p>
+            <p>Podatek vat: {{summary.Vat}}</p>
 
-            <p> Kwota Brutto: {{podsumowanie.Brutto}}</p>
+            <p> Kwota Brutto: {{summary.Brutto}}</p>
           </div>
 
         </mat-toolbar>
         <div style="margin-top:20px">
-          <button color="warn" mat-raised-button (click)="otworzDialog()">Zdefinuj</button>
-          <button color="primary" mat-raised-button (click)="wystawFakture()">Wystaw</button>
+          <button color="warn" mat-raised-button (click)="openDialog()">Zdefinuj</button>
+          <button color="primary" mat-raised-button (click)="sendInvoice()">Wystaw</button>
         </div>
       </div>
     </mat-tab>
@@ -94,66 +100,51 @@
     <mat-tab label="Nowy produkt">
       <div id="formularzProduktu">
         <mat-form-field>
-          <input matInput placeholder="Nazwa" type="text" [(ngModel)]='komendaStworzeniaProduktu.Nazwa'>
+          <input matInput placeholder="Nazwa" type="text" [(ngModel)]='productAddCommand.Name'>
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="Cena Netto" type="number" [(ngModel)]='komendaStworzeniaProduktu.CenaNetto'>
+          <input matInput placeholder="Cena Netto" type="number" [(ngModel)]='productAddCommand.NettoPrice'>
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="Jednostka miary" type="text" [(ngModel)]='komendaStworzeniaProduktu.JednostkaMiary'>
+          <input matInput placeholder="Jednostka miary" type="text" [(ngModel)]='productAddCommand.Unit'>
         </mat-form-field>
         <br>
-        <button color="primary" mat-raised-button (click)="dodajProdukt()">Dodaj</button>
+        <button color="primary" mat-raised-button (click)="addProduct()">Dodaj</button>
       </div>
     </mat-tab>
 
     <mat-tab label="Nowy klient">
       <div id="formularzKlienta">
         <mat-form-field>
-          <input matInput placeholder="Opis" type="text" [(ngModel)]='komendaStworzeniaKlienta.Nazwa'>
+          <input matInput placeholder="Opis" type="text" [(ngModel)]='clientAddCommand.Name'>
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="Nazwa" type="text" [(ngModel)]='komendaStworzeniaKlienta.Opis'>
+          <input matInput placeholder="Nazwa" type="text" [(ngModel)]='clientAddCommand.Description'>
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="Nr konta bankowego" type="text" [(ngModel)]='komendaStworzeniaKlienta.NrKontaBankowego'>
+          <input matInput placeholder="Nr konta bankowego" type="text" [(ngModel)]='clientAddCommand.AccountNumber'>
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="Adres" type="text" [(ngModel)]='komendaStworzeniaKlienta.Adres'>
+          <input matInput placeholder="Adres" type="text" [(ngModel)]='clientAddCommand.Address'>
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="Nip" type="text" [(ngModel)]='komendaStworzeniaKlienta.Nip'>
+          <input matInput placeholder="Nip" type="text" [(ngModel)]='clientAddCommand.TaxId'>
         </mat-form-field>
         <br>
         <mat-form-field>
-          <input matInput placeholder="NazwaFirmy" type="text" [(ngModel)]='komendaStworzeniaKlienta.NazwaFirmy'>
+          <input matInput placeholder="NazwaFirmy" type="text" [(ngModel)]='clientAddCommand.CompanyName'>
         </mat-form-field>
         <br>
-        <button color="primary" mat-raised-button (click)="dodajKlienta()">Dodaj</button>
+        <button color="primary" mat-raised-button (click)="addClient()">Dodaj</button>
       </div>
     </mat-tab>
 
   </mat-tab-group>
 
 </div>
-<!-- <div>
-  <div>
-    <button (click)="pokazFormularzFaktury = true">Nowa faktura</button>
-  </div>
-</div>
-<div *ngIf="pokazFormularzProduktu != true">
-    <div>
-      <button (click)="pokazFormularzProduktu = true">Nowy produkt</button>
-    </div>
-</div>
-<div *ngIf="pokazFormularzKlienta != true">
-    <div>
-      <button (click)="pokazFormularzKlienta = true">Nowy klient</button>
-    </div>
-</div> -->

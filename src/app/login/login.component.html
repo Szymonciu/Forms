@@ -1,73 +1,73 @@
-<div *ngIf='wezZalogowanego()'>
-    <mat-card>
-        <mat-card-title>Uzytkownik</mat-card-title>
-        <mat-card-content>
-            <h3>{{zalogowany}}</h3>
-            <img src="../../borsuk3.jpg" mat-card-md-image>
-        </mat-card-content>   
-        <button color="primary" (click)="idzDoProfilu()" mat-raised-button>Profil</button>
-        <button color="warn" mat-raised-button (click)="wyloguj()">Wyloguj</button>
-    </mat-card>
+<div *ngIf='getLoggedIn()'>
+  <mat-card>
+    <mat-card-title>Uzytkownik</mat-card-title>
+    <mat-card-content>
+      <h3>{{loggedIn}}</h3>
+      <img src="../../borsuk3.jpg" mat-card-md-image>
+    </mat-card-content>
+    <button color="primary" (click)="goToProfile()" mat-raised-button>Profil</button>
+    <button color="warn" mat-raised-button (click)="logOut()">Wyloguj</button>
+  </mat-card>
 </div>
 
-<div class="rej" style="margin:10px" *ngIf='pokazRejestracje != true && !wezZalogowanego()'>
+<div class="rej" style="margin:10px" *ngIf='showRegistration != true && !getLoggedIn()'>
 
-    <mat-toolbar style="padding:20px">
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="text" [(ngModel)]='login' placeholder="Login">
-            </mat-form-field>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="password" [(ngModel)]="haslo" placeholder="Haslo">
-            </mat-form-field>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-            <button color="primary" mat-raised-button (click)='zaloguj()'>Zaloguj</button>
-            <button style="margin-left: 10px" mat-raised-button (click)='pokazRejestracje = true'>Nowy użytkownik</button>
-        </mat-toolbar-row>
-    </mat-toolbar>
+  <mat-toolbar style="padding:20px">
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="text" [(ngModel)]='login' placeholder="Login">
+      </mat-form-field>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="password" [(ngModel)]="password" placeholder="Haslo">
+      </mat-form-field>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <button color="primary" mat-raised-button (click)='logIn()'>Zaloguj</button>
+      <button style="margin-left: 10px" mat-raised-button (click)='showRegistration = true'>Nowy użytkownik</button>
+    </mat-toolbar-row>
+  </mat-toolbar>
 </div>
 
-<div style="margin:10px" class="rej" *ngIf='pokazRejestracje == true && !wezZalogowanego()'>
-    <mat-toolbar style="padding:20px">
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="password" [(ngModel)]='noweHaslo' placeholder="Hasło">
-            </mat-form-field>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="text" [(ngModel)]='nowyLogin' placeholder="Login">
-            </mat-form-field>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="number" [(ngModel)]='nrBanku' placeholder="Nr konta bankowego">
-            </mat-form-field>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="text" [(ngModel)]='adres' placeholder="Adres">
-            </mat-form-field>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="text" [(ngModel)]='nip' placeholder="Nip">
+<div style="margin:10px" class="rej" *ngIf='showRegistration == true && !getLoggedIn()'>
+  <mat-toolbar style="padding:20px">
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="password" [(ngModel)]='newPassword' placeholder="Hasło">
+      </mat-form-field>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="text" [(ngModel)]='newLogin' placeholder="Login">
+      </mat-form-field>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="number" [(ngModel)]='accountNumber' placeholder="Nr konta bankowego">
+      </mat-form-field>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="text" [(ngModel)]='address' placeholder="Adres">
+      </mat-form-field>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="text" [(ngModel)]='taxId' placeholder="Nip">
 
-            </mat-form-field>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-            <mat-form-field>
-                <input matInput type="text" [(ngModel)]='nazwaFirmy' placeholder="Nazwa firmy">
-            </mat-form-field>
-        </mat-toolbar-row>
+      </mat-form-field>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput type="text" [(ngModel)]='companyName' placeholder="Nazwa firmy">
+      </mat-form-field>
+    </mat-toolbar-row>
 
-        <mat-toolbar-row>
-            <button style="margin-right:10px" color="primary" mat-raised-button (click)='rejestruj()'>Zarejestruj</button>
-            <button mat-raised-button (click)='pokazRejestracje = false'>Wróć</button>
-        </mat-toolbar-row>
-    </mat-toolbar>
+    <mat-toolbar-row>
+      <button style="margin-right:10px" color="primary" mat-raised-button (click)='register()'>Zarejestruj</button>
+      <button mat-raised-button (click)='showRegistration = false'>Wróć</button>
+    </mat-toolbar-row>
+  </mat-toolbar>
 
 </div>

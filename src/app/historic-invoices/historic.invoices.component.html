@@ -1,9 +1,9 @@
-
 <div style="margin-top:50px;padding:20px;width:600px">
-<mat-list role="list">
-    
-  <mat-list-item class="faktura-lista" *ngFor="let faktura of faktury;let i = index" role="listitem"><a style="width: 100%" (click)="wybierzFakture(faktura)">{{i + 1}}. {{faktura.NumerFaktury}} : {{faktura.DataWystawienia |date:"dd/MM/yyyy" }} - {{faktura.Klient.Nazwa}}</a> <a class="usun-fakture" (click)="usun(faktura)">X</a>
-  </mat-list-item>
- 
-</mat-list>
+  <mat-list role="list">
+
+    <mat-list-item class="faktura-lista" *ngFor="let invoice of invoices;let i = index" role="listitem"><a style="width: 100%" (click)="chooseInvoice(invoice)">{{i + 1}}. {{invoice.InvoiceNumber}} : {{invoice.CreatedDate |date:"dd/MM/yyyy" }} - {{invoice.Client.Name}}</a>
+      <a class="usun-fakture" (click)="delete(invoice)">X</a>
+    </mat-list-item>
+
+  </mat-list>
 </div>

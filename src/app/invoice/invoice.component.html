@@ -4,7 +4,7 @@
 <div id="InvoicePrint" class="faktura-cialo">
   <h2>Faktura</h2>
 
-  <h4>Nr: {{faktura.NumerFaktury}}</h4>
+  <h4>Nr: {{invoice.InvoiceNumber}}</h4>
 
   <div class="faktura-Srodek">
     <div style="text-align:right" class="faktura-forma">
@@ -15,26 +15,26 @@
     </div>
     <div class="faktura-forma">
       <p>
-        <span class="faktura-text">{{faktura.Uzytkownik.NazwaFirmy}}</span>
+        <span class="faktura-text">{{invoice.User.CompanyName}}</span>
       </p>
       <p>
-        <span class="faktura-text">{{faktura.Uzytkownik.Adres}}</span>
+        <span class="faktura-text">{{invoice.User.Address}}</span>
       </p>
       <p>
-        <span class="faktura-text">{{faktura.Uzytkownik.Nip}}</span>
+        <span class="faktura-text">{{invoice.User.TaxId}}</span>
       </p>
     </div>
 
 
     <div style="padding-right:8px" class="faktura-forma-prawa">
       <p>
-        <span class="faktura-text">{{faktura.Klient.NazwaFirmy}}</span>
+        <span class="faktura-text">{{invoice.Client.CompanyName}}</span>
       </p>
       <p>
-        <span class="faktura-text">{{faktura.Klient.Adres}}</span>
+        <span class="faktura-text">{{invoice.Client.Address}}</span>
       </p>
       <p>
-        <span class="faktura-text">{{faktura.Klient.Nip}}</span>
+        <span class="faktura-text">{{invoice.Client.TaxId}}</span>
       </p>
     </div>
     <div style="text-align:right" class="faktura-forma-prawa">
@@ -56,18 +56,18 @@
     </div>
     <div class="faktura-forma">
       <p>
-        <span class="faktura-text">{{faktura.DataWystawienia | date:"dd/MM/yyyy" }}</span>
+        <span class="faktura-text">{{invoice.CreatedDate | date:"dd/MM/yyyy" }}</span>
       </p>
       <p>
-        <span class="faktura-text">{{faktura.DataPlatnosci | date:"dd/MM/yyyy"}}</span>
+        <span class="faktura-text">{{invoice.PaymentDate | date:"dd/MM/yyyy"}}</span>
       </p>
     </div>
     <div style="padding-right:8px" class="faktura-forma-prawa">
       <p>
-        <span class="faktura-text">{{faktura.FormaPlatnosci}}</span>
+        <span class="faktura-text">{{invoice.PaymentType}}</span>
       </p>
       <p>
-        <span class="faktura-text">{{faktura.Klient.NrKontaBankowego}}</span>
+        <span class="faktura-text">{{invoice.Client.AccountNumber}}</span>
       </p>
     </div>
     <div style="text-align:right" class="faktura-forma-prawa">
@@ -90,25 +90,25 @@
       <div style="width:11%">Kwota VAT</div>
       <div style="width:11%">Wartość brutto</div>
     </div>
-    <div *ngFor="let produkt of faktura.Produkty;let i = index" class="faktura-tabela-wiersz">
+    <div *ngFor="let product of invoice.Products;let i = index" class="faktura-tabela-wiersz">
       <div style="width:6%">{{i + 1 }}</div>
-      <div style="width:28%">{{produkt.Nazwa}}</div>
-      <div style="width:6%">{{produkt.Ilosc}}</div>
-      <div style="width:6%">{{produkt.JednostkaMiary}}</div>
-      <div style="width:11%">{{produkt.CenaNetto}}</div>
-      <div style="width:11%">{{produkt.Ilosc * produkt.CenaNetto}}</div>
+      <div style="width:28%">{{product.Name}}</div>
+      <div style="width:6%">{{product.Quantity}}</div>
+      <div style="width:6%">{{product.Unit}}</div>
+      <div style="width:11%">{{product.NettoPrice}}</div>
+      <div style="width:11%">{{product.Quantity * product.NettoPrice}}</div>
       <div style="width:8%">{{vat * 100}}</div>
-      <div style="width:11%">{{produkt.Ilosc * produkt.CenaNetto * vat}}</div>
-      <div style="width:11%">{{produkt.Ilosc * produkt.CenaNetto * vatCaly}}</div>
+      <div style="width:11%">{{product.Quantity * product.NettoPrice * vat}}</div>
+      <div style="width:11%">{{product.Quantity * product.NettoPrice * vatOverall}}</div>
     </div>
     <div class="faktura-tabela-podsumowanie">
-      <div class="wynik">RAZEM DO ZAPLATY: {{podsumowanie.Brutto}}</div>
+      <div class="wynik">RAZEM DO ZAPLATY: {{summary.Brutto}}</div>
       <div class="szczegoly">
         <div style="width:21%">RAZEM:</div>
-        <div style="width:20%">{{podsumowanie.Netto}}</div>
+        <div style="width:20%">{{summary.Netto}}</div>
         <div style="width:14%">{{vat * 100}}</div>
-        <div style="width:20%">{{podsumowanie.Vat}}</div>
-        <div style="width:22%">{{podsumowanie.Brutto}}</div>
+        <div style="width:20%">{{summary.Vat}}</div>
+        <div style="width:22%">{{summary.Brutto}}</div>
       </div>
     </div>
   </div>

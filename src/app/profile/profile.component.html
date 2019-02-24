@@ -3,59 +3,59 @@
     <mat-tab label="Opis">
       <mat-toolbar style="height:auto!important" color="primary">
         <div style="padding:10px">
-          <p>Profil: {{uzytkownik.Login}}</p>
-          <p>Nr Konta: {{uzytkownik.NrKontaBankowego}}</p>
-          <p>Adres: {{uzytkownik.Adres}}</p>
-          <p>Nip: {{uzytkownik.Nip}}</p>
-          <p>Nazwa firmy: {{uzytkownik.NazwaFirmy}}</p>
+          <p>Profil: {{user.Login}}</p>
+          <p>Nr Konta: {{user.AccountNumber}}</p>
+          <p>Adres: {{user.Address}}</p>
+          <p>Nip: {{user.TaxId}}</p>
+          <p>Nazwa firmy: {{user.CompanyName}}</p>
         </div>
       </mat-toolbar>
     </mat-tab>
     <mat-tab label="Edytuj">
-        <mat-toolbar style="padding:20px">
-            <mat-toolbar-row>
-                <mat-form-field>
-                    <input matInput type="number" [(ngModel)]='nrBanku' placeholder="Nr konta bankowego">
-                </mat-form-field>
-            </mat-toolbar-row>
-            <mat-toolbar-row>
-                <mat-form-field>
-                    <input matInput type="text" [(ngModel)]='adres' placeholder="Adres">
-                </mat-form-field>
-            </mat-toolbar-row>
-            <mat-toolbar-row>
-                <mat-form-field>
-                    <input matInput type="text" [(ngModel)]='nip' placeholder="Nip">
-    
-                </mat-form-field>
-            </mat-toolbar-row>
-            <mat-toolbar-row>
-                <mat-form-field>
-                    <input matInput type="text" [(ngModel)]='nazwaFirmy' placeholder="Nazwa firmy">
-                </mat-form-field>
-            </mat-toolbar-row>
-    
-            <mat-toolbar-row>
-                <button style="margin-right:10px" color="primary" mat-raised-button (click)='edytuj()'>Zatwierdź</button>
-            </mat-toolbar-row>
-        </mat-toolbar>
-      </mat-tab>
-      <mat-tab label="Zmien haslo">
-      <mat-toolbar style="padding:20px">   
-          <mat-toolbar-row>
-              <mat-form-field>
-                  <input matInput type="password" [(ngModel)]='noweHaslo' placeholder="Nowe hasło">
-              </mat-form-field>
-          </mat-toolbar-row>
-          <mat-toolbar-row>
-              <mat-form-field>
-                  <input matInput type="password" [(ngModel)]='noweHaslo2' placeholder="Powtórz hasło">
-              </mat-form-field>
-          </mat-toolbar-row>
-          <mat-toolbar-row>
-              <button style="margin-right:10px" color="primary" mat-raised-button (click)='zmienHaslo()'>Zatwierdź</button>
-          </mat-toolbar-row>
-        </mat-toolbar>
-      </mat-tab>
+      <mat-toolbar style="padding:20px">
+        <mat-toolbar-row>
+          <mat-form-field>
+            <input matInput type="number" [(ngModel)]='accountNumber' placeholder="Nr konta bankowego">
+          </mat-form-field>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+          <mat-form-field>
+            <input matInput type="text" [(ngModel)]='address' placeholder="Adres">
+          </mat-form-field>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+          <mat-form-field>
+            <input matInput type="text" [(ngModel)]='taxId' placeholder="Nip">
+
+          </mat-form-field>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+          <mat-form-field>
+            <input matInput type="text" [(ngModel)]='companyName' placeholder="Nazwa firmy">
+          </mat-form-field>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+          <button style="margin-right:10px" color="primary" mat-raised-button (click)='edit()'>Zatwierdź</button>
+        </mat-toolbar-row>
+      </mat-toolbar>
+    </mat-tab>
+    <mat-tab label="Zmien haslo">
+      <mat-toolbar style="padding:20px">
+        <mat-toolbar-row>
+          <mat-form-field>
+            <input matInput type="password" [(ngModel)]='newPassword' placeholder="Nowe hasło">
+          </mat-form-field>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+          <mat-form-field>
+            <input matInput type="password" [(ngModel)]='newPassword2' placeholder="Powtórz hasło">
+          </mat-form-field>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+          <button style="margin-right:10px" color="primary" mat-raised-button (click)='changePassword()'>Zatwierdź</button>
+        </mat-toolbar-row>
+      </mat-toolbar>
+    </mat-tab>
   </mat-tab-group>
 </div>
