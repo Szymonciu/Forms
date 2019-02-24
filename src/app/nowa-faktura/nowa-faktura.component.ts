@@ -12,16 +12,14 @@ import { LogowanieUzytkownika } from '../pomoce/LogowanieUzytkownika';
 import { Produkt } from '../modele/Produkt';
 import { MatSnackBar } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
 import { filter } from 'rxjs/operators';
-import { startWith } from 'rxjs/operators/startWith';
-import { map } from 'rxjs/operators/map';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OnChanges } from '@angular/core';
 import { Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ZdefinowanaDialogComponent } from '../oknaDialogowe/ZdefinowanaDialog.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-nowa-faktura',
