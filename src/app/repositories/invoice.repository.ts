@@ -16,28 +16,28 @@ export class InvoiceRepository {
   Dodaj(komenda: InvoiceAddCommand): boolean {
     var faktura: Invoice;
     var isDefined = false;
-    if (komenda.Nazwa != undefined && komenda.Nazwa != null) {
-      faktura = this.Pobierz(komenda.Nazwa);
+    if (komenda.Name != undefined && komenda.Name != null) {
+      faktura = this.Pobierz(komenda.Name);
       isDefined = true;
       if (faktura !== null) return false;
     }
 
     faktura = new Invoice(
-      komenda.NumerFaktury,
-      komenda.LoginUzytkownika,
-      komenda.LoginKlienta,
-      komenda.DataWystawienia,
-      komenda.Produkty,
-      komenda.FormaPlatnosci,
-      komenda.DataPlatnosci
+      komenda.InvoiceNumber,
+      komenda.Login,
+      komenda.ClientLogin,
+      komenda.CreatedDate,
+      komenda.Products,
+      komenda.PaymentType,
+      komenda.PaymentDate
     );
-    faktura.Kwota = komenda.Kwota;
-    faktura.Zdefiniowana = komenda.Zdefinowana;
+    faktura.Value = komenda.Value;
+    faktura.Defined = komenda.Defined;
     faktura.Vat = komenda.Vat;
 
     if (isDefined) {
-      faktura.Nazwa = komenda.Nazwa;
-      faktura.Opis = komenda.Opis;
+      faktura.Name = komenda.Name;
+      faktura.Description = komenda.Description;
     }
 
     var faktury = this.tmpRepo.Get(this.prfix);
@@ -109,8 +109,8 @@ export class InvoiceRepository {
     var indexOf = -1;
     for (let i = 0; i < faktury.length; i++) {
       if (
-        faktury[i].NumerFaktury === faktura.NumerFaktury &&
-        faktury[i].LoginUzytkownika == faktura.LoginUzytkownika
+        faktury[i].NumerFaktury === faktura.InvoiceNumber &&
+        faktury[i].LoginUzytkownika == faktura.Login
       )
         indexOf = i;
     }
@@ -125,8 +125,8 @@ export class InvoiceRepository {
     var indexOf = -1;
     for (let i = 0; i < faktury.length; i++) {
       if (
-        faktury[i].Nazwa === faktura.Nazwa &&
-        faktury[i].LoginUzytkownika == faktura.LoginUzytkownika &&
+        faktury[i].Nazwa === faktura.Name &&
+        faktury[i].LoginUzytkownika == faktura.Login &&
         faktury[i].Zdefiniowana == true
       )
         indexOf = i;

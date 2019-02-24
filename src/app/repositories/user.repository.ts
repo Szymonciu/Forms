@@ -17,11 +17,11 @@ export class UserRepository {
     if (uz != null) return false;
     var użytkownik = new User(
       komenda.Login,
-      komenda.Haslo,
-      komenda.NrKontaBankowego,
-      komenda.Adres,
-      komenda.Nip,
-      komenda.NazwaFirmy
+      komenda.Password,
+      komenda.AccountNumber,
+      komenda.Address,
+      komenda.TaxId,
+      komenda.CompanyName
     );
     console.log(użytkownik);
     this.tmpRepo.Add(użytkownik.Login, użytkownik);
@@ -40,10 +40,10 @@ export class UserRepository {
   Edytuj(komenda: UserEditCommand) {
     var uzytkownik = this.Pobierz(komenda.Login);
     if (uzytkownik == null) return false;
-    uzytkownik.Adres = komenda.Adres;
-    uzytkownik.NazwaFirmy = komenda.NazwaFirmy;
-    uzytkownik.NrKontaBankowego = komenda.NrKontaBankowego;
-    uzytkownik.Nip = komenda.Nip;
+    uzytkownik.Address = komenda.Address;
+    uzytkownik.CompanyName = komenda.CompanyName;
+    uzytkownik.AccountNumber = komenda.AccountNumber;
+    uzytkownik.TaxId = komenda.TaxId;
     this.tmpRepo.Add(komenda.Login, uzytkownik);
     return true;
   }
@@ -51,7 +51,7 @@ export class UserRepository {
   ZmienHaslo(komenda: PasswordEditCommand) {
     var uzytkownik = this.Pobierz(komenda.Login);
     if (uzytkownik == null) return false;
-    uzytkownik.Haslo = komenda.NoweHaslo;
+    uzytkownik.Haslo = komenda.NewPassword;
     this.tmpRepo.Add(komenda.Login, uzytkownik);
     return true;
   }

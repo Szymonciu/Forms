@@ -17,7 +17,7 @@ export class InvoiceComponent implements OnInit {
   constructor(private router: Router, private przetFaktury: InvoiceProcessor) {}
 
   ngOnInit() {
-    this.faktura = this.przetFaktury.Faktura;
+    this.faktura = this.przetFaktury.Invoice;
     this.vat = this.przetFaktury.Procent;
     this.vatCaly = this.przetFaktury.ProcentCaly;
     this.podsumowanie = this.przetFaktury.FakturaPodsumowanie;

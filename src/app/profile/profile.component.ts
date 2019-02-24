@@ -24,13 +24,13 @@ export class ProfileComponent implements OnInit {
     public snackBar: MatSnackBar,
     private logowanieUzytkownika: UserAuthorizer
   ) {
-    this.uzytkownik = logowanieUzytkownika.ZalogowanyUzytkownik();
-    this.nrBanku = this.uzytkownik.NrKontaBankowego;
-    this.adres = this.uzytkownik.Adres;
-    this.nip = this.uzytkownik.Nip;
-    this.nazwaFirmy = this.uzytkownik.NazwaFirmy;
-    this.nrBanku = this.uzytkownik.NrKontaBankowego;
-    this.nrBanku = this.uzytkownik.NrKontaBankowego;
+    this.uzytkownik = logowanieUzytkownika.getCurrentuser();
+    this.nrBanku = this.uzytkownik.AccountNumber;
+    this.adres = this.uzytkownik.Address;
+    this.nip = this.uzytkownik.TaxId;
+    this.nazwaFirmy = this.uzytkownik.CompanyName;
+    this.nrBanku = this.uzytkownik.AccountNumber;
+    this.nrBanku = this.uzytkownik.AccountNumber;
   }
 
   edytuj() {
@@ -49,7 +49,7 @@ export class ProfileComponent implements OnInit {
       this.logowanieUzytkownika.Zaloguj(
         new AuthorizeCommand(this.uzytkownik.Login, this.uzytkownik.Haslo)
       );
-      this.uzytkownik = this.logowanieUzytkownika.ZalogowanyUzytkownik();
+      this.uzytkownik = this.logowanieUzytkownika.getCurrentuser();
     }
   }
 
@@ -67,7 +67,7 @@ export class ProfileComponent implements OnInit {
         this.logowanieUzytkownika.Zaloguj(
           new AuthorizeCommand(this.uzytkownik.Login, this.uzytkownik.Haslo)
         );
-        this.uzytkownik = this.logowanieUzytkownika.ZalogowanyUzytkownik();
+        this.uzytkownik = this.logowanieUzytkownika.getCurrentuser();
       }
     } else {
       this.snackBar.open("Hasla musza byc takie same!", "", {

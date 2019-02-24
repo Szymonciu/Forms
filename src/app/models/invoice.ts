@@ -1,16 +1,25 @@
-import { Client } from './client';
-import { Product } from './product';
-import { User } from './user';
-export class Invoice {
-    public Produkty: Array<Product>;
-    public Klient: Client;
-    public Uzytkownik: User;
-    public Nazwa: string;
-    public Opis: string;
-    public Kwota: number;
-    public Zdefiniowana: boolean;
-    public Historyczna: boolean;
-    public Vat: number;
+import { Client } from "./client";
+import { Product } from "./product";
+import { User } from "./user";
 
-    constructor(public NumerFaktury: string, public LoginUzytkownika: string, public LoginKlienta: string, public DataWystawienia: Date, public ProduktyId: Array<Product>, public FormaPlatnosci: string, public DataPlatnosci: Date) { }
+export class Invoice {
+  public Products: Array<Product>;
+  public Client: Client;
+  public User: User;
+  public Name: string;
+  public Description: string;
+  public Value: number;
+  public Defined: boolean;
+  public Historic: boolean;
+  public Vat: number;
+
+  constructor(
+    public InvoiceNumber: string,
+    public Login: string,
+    public ClientLogin: string,
+    public CreatedDate: Date,
+    public ProductIds: Array<Product>,
+    public PaymentType: string,
+    public PaymentDate: Date
+  ) {}
 }

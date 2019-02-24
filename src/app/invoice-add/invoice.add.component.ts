@@ -42,10 +42,10 @@ export class InvoiceAddComponent implements OnInit {
   produkty: Array<Product>;
   produktyWybrane: Array<Product>;
   wybranyKlient = {
-    Nip: null,
-    Adres: null,
-    NazwaFirmy: null,
-    Nazwa: null
+    TaxId: null,
+    Address: null,
+    CompanyName: null,
+    Name: null
   };
   podsumowanie = {
     Vat: null,
@@ -75,11 +75,11 @@ export class InvoiceAddComponent implements OnInit {
     this.komendaStworzeniaKlienta = new ClientAddCommand();
     this.komendaStworzeniaFaktury = new InvoiceAddCommand();
     var now = new Date();
-    this.komendaStworzeniaFaktury.DataPlatnosci = now;
-    this.komendaStworzeniaFaktury.DataWystawienia = now;
+    this.komendaStworzeniaFaktury.PaymentDate = now;
+    this.komendaStworzeniaFaktury.CreatedDate = now;
     this.komendaStworzeniaProduktu = new ProductAddCommand();
     this.produktyWybrane = new Array<Product>();
-    this.uzytkownik = logowanieUzytkownika.ZalogowanyUzytkownik();
+    this.uzytkownik = logowanieUzytkownika.getCurrentuser();
     this.pobierzKlientów();
     this.pobierzProdukty();
     this.nrFaktury = this.przetFaktury.WygenerujNumerFaktury(
@@ -89,24 +89,23 @@ export class InvoiceAddComponent implements OnInit {
   }
 
   pobierzKlientów() {
-    this.klienci = this.przetKlienta.Pobierz(this.uzytkownik.Login);
+    this.klienci = this.przetKlienta.Get(this.uzytkownik.Login);
   }
   czyZdefiniowana() {
-    if (this.przetFaktury.Zdefiniowana) {
-      var fakturaZapisana = this.przetFaktury.Faktura;
-      this.wybierzKlienta(fakturaZapisana.Klient);
-      this.komendaStworzeniaFaktury.FormaPlatnosci =
-        fakturaZapisana.FormaPlatnosci;
+    if (this.przetFaktury.Defined) {
+      var fakturaZapisana = this.przetFaktury.Invoice;
+      this.wybierzKlienta(fakturaZapisana.Client);
+      this.komendaStworzeniaFaktury.PaymentType = fakturaZapisana.PaymentType;
       this.komendaStworzeniaFaktury.Vat = fakturaZapisana.Vat;
       this.vat = fakturaZapisana.Vat;
-      for (let i = 0; i < fakturaZapisana.Produkty.length; i++) {
-        this.produktyWybrane.push(fakturaZapisana.Produkty[i]);
+      for (let i = 0; i < fakturaZapisana.Products.length; i++) {
+        this.produktyWybrane.push(fakturaZapisana.Products[i]);
       }
 
       this.wyliczPodsumowanie();
-      this.komendaStworzeniaFaktury.Produkty = this.produktyWybrane;
+      this.komendaStworzeniaFaktury.Products = this.produktyWybrane;
     }
-    this.przetFaktury.Zdefiniowana = false;
+    this.przetFaktury.Defined = false;
   }
 
   otworzDialog() {
@@ -124,13 +123,13 @@ export class InvoiceAddComponent implements OnInit {
       .afterClosed()
       .pipe(filter(name => name))
       .subscribe(name => {
-        this.komendaStworzeniaFaktury.Nazwa = name;
+        this.komendaStworzeniaFaktury.Name = name;
         this.zdefinuj();
       });
   }
 
   dodajKlienta() {
-    this.komendaStworzeniaKlienta.LoginUzytkownika = this.uzytkownik.Login;
+    this.komendaStworzeniaKlienta.Login = this.uzytkownik.Login;
     var result = this.przetKlienta.Dodaj(this.komendaStworzeniaKlienta);
 
     if (result) {
@@ -155,12 +154,12 @@ export class InvoiceAddComponent implements OnInit {
   }
 
   pobierzProdukty() {
-    this.produkty = this.przetProduktu.Pobierz(this.uzytkownik.Login);
+    this.produkty = this.przetProduktu.Get(this.uzytkownik.Login);
     console.log(this.produkty);
   }
 
   dodajProdukt() {
-    this.komendaStworzeniaProduktu.LoginUzytkownika = this.uzytkownik.Login;
+    this.komendaStworzeniaProduktu.Login = this.uzytkownik.Login;
     var result = this.przetProduktu.Dodaj(this.komendaStworzeniaProduktu);
 
     if (result) {
@@ -184,16 +183,16 @@ export class InvoiceAddComponent implements OnInit {
     for (let i = 0; i < this.produktyWybrane.length; i++) {
       this.podsumowanie.Vat =
         this.podsumowanie.Vat +
-        this.produktyWybrane[i].CenaNetto *
-          this.produktyWybrane[i].Ilosc *
+        this.produktyWybrane[i].NettoPrice *
+          this.produktyWybrane[i].Quantity *
           this.procentVat;
       this.podsumowanie.Netto =
         this.podsumowanie.Netto +
-        this.produktyWybrane[i].CenaNetto * this.produktyWybrane[i].Ilosc;
+        this.produktyWybrane[i].NettoPrice * this.produktyWybrane[i].Quantity;
       this.podsumowanie.Brutto =
         this.podsumowanie.Brutto +
-        this.produktyWybrane[i].CenaNetto *
-          this.produktyWybrane[i].Ilosc *
+        this.produktyWybrane[i].NettoPrice *
+          this.produktyWybrane[i].Quantity *
           this.procentVatCaly;
     }
     this.podsumowanie.Vat = this.precisionRound(this.podsumowanie.Vat, 2);
@@ -205,17 +204,17 @@ export class InvoiceAddComponent implements OnInit {
 
   wybierzKlienta(klient: Client) {
     this.wybranyKlient = klient;
-    this.komendaStworzeniaFaktury.LoginKlienta = klient.Nazwa;
+    this.komendaStworzeniaFaktury.ClientLogin = klient.Name;
   }
 
   wybierzProdukty(produkt: Product) {
     if (this.produktyWybrane.includes(produkt)) this.usunProdukt(produkt);
     else {
-      produkt.Ilosc = 1;
+      produkt.Quantity = 1;
       this.produktyWybrane.push(produkt);
     }
     this.wyliczPodsumowanie();
-    this.komendaStworzeniaFaktury.Produkty = this.produktyWybrane;
+    this.komendaStworzeniaFaktury.Products = this.produktyWybrane;
   }
 
   usunProdukt(produkt: Product) {
@@ -256,32 +255,32 @@ export class InvoiceAddComponent implements OnInit {
 
   sprawdz() {
     if (
-      this.komendaStworzeniaFaktury.LoginKlienta === null ||
-      this.komendaStworzeniaFaktury.LoginKlienta === undefined ||
-      this.komendaStworzeniaFaktury.LoginKlienta == ""
+      this.komendaStworzeniaFaktury.ClientLogin === null ||
+      this.komendaStworzeniaFaktury.ClientLogin === undefined ||
+      this.komendaStworzeniaFaktury.ClientLogin == ""
     )
       return true;
     if (
-      this.komendaStworzeniaFaktury.DataWystawienia === null ||
-      this.komendaStworzeniaFaktury.DataWystawienia === undefined ||
-      this.komendaStworzeniaFaktury.DataPlatnosci == null ||
-      this.komendaStworzeniaFaktury.DataPlatnosci == undefined
+      this.komendaStworzeniaFaktury.CreatedDate === null ||
+      this.komendaStworzeniaFaktury.CreatedDate === undefined ||
+      this.komendaStworzeniaFaktury.PaymentDate == null ||
+      this.komendaStworzeniaFaktury.PaymentDate == undefined
     )
       return true;
     if (
-      this.komendaStworzeniaFaktury.Produkty === null ||
-      this.komendaStworzeniaFaktury.Produkty === undefined ||
-      this.komendaStworzeniaFaktury.Produkty.length <= 0
+      this.komendaStworzeniaFaktury.Products === null ||
+      this.komendaStworzeniaFaktury.Products === undefined ||
+      this.komendaStworzeniaFaktury.Products.length <= 0
     )
       return true;
   }
 
   nowaFaktura(zdefinowano) {
-    this.komendaStworzeniaFaktury.LoginUzytkownika = this.uzytkownik.Login;
-    this.komendaStworzeniaFaktury.NumerFaktury = this.nrFaktury;
+    this.komendaStworzeniaFaktury.Login = this.uzytkownik.Login;
+    this.komendaStworzeniaFaktury.InvoiceNumber = this.nrFaktury;
     this.komendaStworzeniaFaktury.Vat = this.vat;
     if (zdefinowano) {
-      this.komendaStworzeniaFaktury.Zdefinowana = true;
+      this.komendaStworzeniaFaktury.Defined = true;
     }
 
     this.przetFaktury.Dodaj(this.komendaStworzeniaFaktury);

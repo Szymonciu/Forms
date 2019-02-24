@@ -15,14 +15,14 @@ export class ProductRepository {
   }
 
   Dodaj(komenda: ProductAddCommand): boolean {
-    var produkt = this.Pobierz(komenda.Nazwa);
+    var produkt = this.Pobierz(komenda.Name);
     if (produkt !== null) return false;
 
-    produkt = new Product(komenda.Nazwa);
-    produkt.Ilosc = komenda.Ilość;
-    produkt.CenaNetto = komenda.CenaNetto;
-    produkt.JednostkaMiary = komenda.JednostkaMiary;
-    produkt.LoginUzytkownika = komenda.LoginUzytkownika;
+    produkt = new Product(komenda.Name);
+    produkt.Quantity = komenda.Quantity;
+    produkt.NettoPrice = komenda.NettoPrice;
+    produkt.Unit = komenda.Unit;
+    produkt.Login = komenda.Login;
 
     var produkty = this.tmpRepo.Get(this.prfix);
     produkty.push(produkt);
@@ -66,8 +66,8 @@ export class ProductRepository {
     var produkty = this.PobierzWszystkie();
     for (let i = 0; i < produkty.length; i++) {
       if (
-        produkty[i].Nazwa == produkt.Nazwa &&
-        produkty[i].LoginUzytkownika == produkt.LoginUzytkownika
+        produkty[i].Name == produkt.Name &&
+        produkty[i].Login == produkt.Login
       )
         indexOf = i;
     }
@@ -82,15 +82,15 @@ export class ProductRepository {
 
     for (let i = 0; i < produkty.length; i++) {
       if (
-        produkty[i].Nazwa == komenda.Nazwa &&
-        produkty[i].LoginUzytkownika == komenda.LoginUzytkownika
+        produkty[i].Name == komenda.Name &&
+        produkty[i].Login == komenda.Login
       )
         produkt = produkty[i];
     }
 
-    produkt.Nazwa = komenda.NowaNazwa;
-    produkt.JednostkaMiary = komenda.JednostkaMiary;
-    produkt.CenaNetto = komenda.CenaNetto;
+    produkt.Name = komenda.NewName;
+    produkt.Unit = komenda.Unit;
+    produkt.NettoPrice = komenda.NettoPrice;
 
     this.tmpRepo.Add(this.prfix, produkty);
     return true;

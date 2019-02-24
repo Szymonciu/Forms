@@ -1,20 +1,19 @@
 export class Product {
-    WartośćVat: number;
-    WartośćBrutto: number;
-    PodatekVat = 23;
-    public Ilosc: number;
-    public LoginUzytkownika: string;
-    public CenaNetto: number;
-    public JednostkaMiary: string;
+  VatValue: number;
+  BruttoValue: number;
+  VatTax = 23;
+  public Quantity: number;
+  public Login: string;
+  public NettoPrice: number;
+  public Unit: string;
 
-    constructor(public Nazwa: string) {
-    }
+  constructor(public Name: string) {}
 
-    public WartoscVat() {
-        return this.CenaNetto * this.Ilosc * this.PodatekVat / 100;
-    }
-    public WartoscBrutto() {
-        var vat = this.WartoscVat();
-        return vat + (this.CenaNetto * this.Ilosc);
-    }
+  public GetNetValue() {
+    return (this.NettoPrice * this.Quantity * this.VatTax) / 100;
+  }
+  public GetGrossValue() {
+    var vat = this.GetNetValue();
+    return vat + this.NettoPrice * this.Quantity;
+  }
 }

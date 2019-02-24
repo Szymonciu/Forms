@@ -1,9 +1,8 @@
 export class ProductAddCommand {
-    public LoginUzytkownika:string;
-    public Nazwa: string;
-    public CenaNetto: number;
-    public Ilość: number;
-    public JednostkaMiary: string;
-    constructor() {
-    }
+  public Login: string;
+  public Name: string;
+  public NettoPrice: number;
+  public Quantity: number;
+  public Unit: string;
+  constructor() {}
 }

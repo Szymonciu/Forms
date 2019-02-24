@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
   }
   wezZalogowanego() {
     if (this.logowanieUzytkownika.JestZalogowany()) {
-      this.zalogowany = this.logowanieUzytkownika.ZalogowanyUzytkownik().Login;
+      this.zalogowany = this.logowanieUzytkownika.getCurrentuser().Login;
       return true;
     } else {
       return false;

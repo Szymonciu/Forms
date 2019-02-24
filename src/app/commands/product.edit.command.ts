@@ -1,9 +1,8 @@
 export class ProductEditCommand {
-    public LoginUzytkownika:string;
-    public Nazwa: string;
-    public NowaNazwa:string
-    public CenaNetto: number;
-    public JednostkaMiary: string;
-    constructor() {
-    }
+  public Login: string;
+  public Name: string;
+  public NewName: string;
+  public NettoPrice: number;
+  public Unit: string;
+  constructor() {}
 }

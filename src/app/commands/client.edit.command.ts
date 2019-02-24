@@ -1,12 +1,11 @@
-export class ClientEditCommand{
-    public LoginUzytkownika:string;
-    public Nazwa:string;
-    public NowaNazwa:string;
-    public Opis:string;
-    public NrKontaBankowego:string;
-    public Adres:string;
-    public Nip:string;
-    public NazwaFirmy:string;
-    constructor(){       
-    }
+export class ClientEditCommand {
+  public Login: string;
+  public Name: string;
+  public NewName: string;
+  public Description: string;
+  public AccountNumber: string;
+  public Address: string;
+  public TaxId: string;
+  public CompanyName: string;
+  constructor() {}
 }

@@ -19,7 +19,7 @@ export class UserAuthorizer {
   Zaloguj(komenda: AuthorizeCommand) {
     var użytkownik = this.repoUzytkowników.Pobierz(komenda.Login);
     if (użytkownik == null || użytkownik == undefined) return false;
-    if (użytkownik.Haslo == komenda.Haslo) {
+    if (użytkownik.Haslo == komenda.password) {
       this.local.Authorize(użytkownik.Login);
       this.użytkownik = użytkownik;
     } else {
@@ -40,7 +40,7 @@ export class UserAuthorizer {
     return this.użytkownik != null && this.użytkownik != undefined;
   }
 
-  ZalogowanyUzytkownik(): User {
+  getCurrentuser(): User {
     return this.użytkownik;
   }
 

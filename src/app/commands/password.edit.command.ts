@@ -1,5 +1,3 @@
-export class PasswordEditCommand{
-    constructor(public Login:string, public NoweHaslo:string){
-        
-    }
+export class PasswordEditCommand {
+  constructor(public Login: string, public NewPassword: string) {}
 }

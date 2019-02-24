@@ -13,7 +13,7 @@ export class AppComponent {
   title = "app";
   wezZalogowanego() {
     if (this.userAuthorizer.JestZalogowany()) {
-      this.zalogowany = this.userAuthorizer.ZalogowanyUzytkownik().Login;
+      this.zalogowany = this.userAuthorizer.getCurrentuser().Login;
       return true;
     } else {
       return false;

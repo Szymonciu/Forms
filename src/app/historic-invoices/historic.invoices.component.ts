@@ -16,13 +16,11 @@ export class HistoricInvoicesComponent implements OnInit {
     public przetFaktur: InvoiceProcessor,
     public logowanieUzyt: UserAuthorizer
   ) {
-    this.faktury = przetFaktur.Pobierz(
-      logowanieUzyt.ZalogowanyUzytkownik().Login
-    );
+    this.faktury = przetFaktur.Pobierz(logowanieUzyt.getCurrentuser().Login);
   }
 
   wybierzFakture(faktura: Invoice) {
-    this.przetFaktur.Faktura = faktura;
+    this.przetFaktur.Invoice = faktura;
     this.przetFaktur.WyliczDlaFaktury();
     this.router.navigate(["faktura"]);
   }
@@ -31,7 +29,7 @@ export class HistoricInvoicesComponent implements OnInit {
   usun(faktura: Invoice) {
     this.przetFaktur.Usun(faktura);
     this.faktury = this.przetFaktur.Pobierz(
-      this.logowanieUzyt.ZalogowanyUzytkownik().Login
+      this.logowanieUzyt.getCurrentuser().Login
     );
   }
 }

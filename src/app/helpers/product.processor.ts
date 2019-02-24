@@ -8,7 +8,7 @@ import { ProductEditCommand } from "../commands/product.edit.command";
 export class ProductProcessor {
   constructor(public repoProduktów: ProductRepository) {}
 
-  Pobierz(login: string): Array<Product> {
+  Get(login: string): Array<Product> {
     return this.repoProduktów.PobierzDlaUzytkownika(login);
   }
 
@@ -20,7 +20,7 @@ export class ProductProcessor {
     return false;
   }
 
-  UsunPoNazwie(produkt: Product) {
+  DeleteByName(produkt: Product) {
     var result = this.repoProduktów.UsunPoNazwie(produkt);
     if (result) {
       return true;
@@ -28,7 +28,7 @@ export class ProductProcessor {
     return false;
   }
 
-  Edytuj(komenda: ProductEditCommand) {
+  Edit(komenda: ProductEditCommand) {
     var result = this.repoProduktów.Edytuj(komenda);
     if (result) {
       return true;

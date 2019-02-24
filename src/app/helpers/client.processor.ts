@@ -8,7 +8,7 @@ import { ClientEditCommand } from "../commands/client.edit.command";
 export class ClientProcessor {
   constructor(public repoKlientów: ClientRepository) {}
 
-  Pobierz(login: string): Array<Client> {
+  Get(login: string): Array<Client> {
     return this.repoKlientów.PobierzDlaUzytkownika(login);
   }
 
@@ -20,7 +20,7 @@ export class ClientProcessor {
     return false;
   }
 
-  UsunPoNazwie(klient: Client) {
+  DeleteByName(klient: Client) {
     var result = this.repoKlientów.UsunPoNazwie(klient);
     if (result) {
       return true;
@@ -28,7 +28,7 @@ export class ClientProcessor {
     return false;
   }
 
-  Edytuj(komenda: ClientEditCommand) {
+  Edit(komenda: ClientEditCommand) {
     var result = this.repoKlientów.Edytuj(komenda);
     if (result) {
       return true;

@@ -15,17 +15,17 @@ export class ClientRepository {
   }
 
   Dodaj(komenda: ClientAddCommand): boolean {
-    var klient = this.Pobierz(komenda.Nazwa);
+    var klient = this.Pobierz(komenda.Name);
     if (klient !== null) return false;
 
     klient = new Client(
-      komenda.LoginUzytkownika,
-      komenda.Opis,
-      komenda.Nazwa,
-      komenda.NrKontaBankowego,
-      komenda.Adres,
-      komenda.Nip,
-      komenda.NazwaFirmy
+      komenda.Login,
+      komenda.Description,
+      komenda.Name,
+      komenda.AccountNumber,
+      komenda.Address,
+      komenda.TaxId,
+      komenda.CompanyName
     );
 
     var klienci = this.tmpRepo.Get(this.prfix);
@@ -69,10 +69,7 @@ export class ClientRepository {
     var indexOf;
     var klienci = this.PobierzWszystkie();
     for (let i = 0; i < klienci.length; i++) {
-      if (
-        klienci[i].Nazwa == klient.Nazwa &&
-        klienci[i].LoginUzytkownika == klient.LoginUzytkownika
-      )
+      if (klienci[i].Name == klient.Name && klienci[i].Login == klient.Login)
         indexOf = i;
     }
     klienci.splice(indexOf, 1);
@@ -85,17 +82,14 @@ export class ClientRepository {
     var klient: Client;
 
     for (let i = 0; i < klienci.length; i++) {
-      if (
-        klienci[i].Nazwa == komenda.Nazwa &&
-        klienci[i].LoginUzytkownika == komenda.LoginUzytkownika
-      )
+      if (klienci[i].Name == komenda.Name && klienci[i].Login == komenda.Login)
         klient = klienci[i];
     }
 
-    klient.Adres = komenda.Adres;
-    klient.NrKontaBankowego = komenda.NrKontaBankowego;
-    klient.Nip = komenda.Nip;
-    klient.NazwaFirmy = komenda.NazwaFirmy;
+    klient.Address = komenda.Address;
+    klient.AccountNumber = komenda.AccountNumber;
+    klient.TaxId = komenda.TaxId;
+    klient.CompanyName = komenda.CompanyName;
 
     this.tmpRepo.Add(this.prfix, klienci);
     return true;

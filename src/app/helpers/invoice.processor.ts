@@ -16,8 +16,8 @@ export class InvoiceProcessor {
     public repoProduktów: ProductRepository
   ) {}
 
-  Faktura: Invoice;
-  Zdefiniowana;
+  Invoice: Invoice;
+  Defined;
   Procent = 0.23;
   ProcentCaly = 1.23;
   FakturaPodsumowanie = {
@@ -34,7 +34,7 @@ export class InvoiceProcessor {
     return faktury;
   }
 
-  PobierzZdefiniowane(login: string): Array<Invoice> {
+  getDefined(login: string): Array<Invoice> {
     var faktury = this.repoFaktur.PobierzZdefiniowane(login);
     for (let i = 0; i < faktury.length; i++) {
       this.UzupełnijFakture(faktury[i]);
@@ -53,24 +53,24 @@ export class InvoiceProcessor {
   PobierzPoNumerze(nrFaktury: string, loginUzytkownika: string) {
     var faktura = this.repoFaktur.PobierzPoNumerze(nrFaktury, loginUzytkownika);
     this.UzupełnijFakture(faktura);
-    this.Faktura = faktura;
+    this.Invoice = faktura;
     return faktura;
   }
 
   UzupełnijFakture(faktura: Invoice) {
-    var uzytkownik = this.repoUzytkownika.Pobierz(faktura.LoginUzytkownika);
-    var klient = this.repoKlientów.Pobierz(faktura.LoginKlienta);
+    var uzytkownik = this.repoUzytkownika.Pobierz(faktura.Login);
+    var klient = this.repoKlientów.Pobierz(faktura.ClientLogin);
     var produkty = new Array<Product>();
-    for (let i = 0; i < faktura.ProduktyId.length; i++) {
-      let produkt = this.repoProduktów.Pobierz(faktura.ProduktyId[i].Nazwa);
+    for (let i = 0; i < faktura.Products.length; i++) {
+      let produkt = this.repoProduktów.Pobierz(faktura.Products[i].Name);
       if (produkt != undefined && produkt != null) {
-        produkt.Ilosc = faktura.ProduktyId[i].Ilosc;
+        produkt.Quantity = faktura.Products[i].Quantity;
         produkty.push(produkt);
       }
     }
-    faktura.Uzytkownik = uzytkownik;
-    faktura.Klient = klient;
-    faktura.Produkty = produkty;
+    faktura.User = uzytkownik;
+    faktura.Client = klient;
+    faktura.Products = produkty;
   }
 
   WygenerujNumerFaktury(loginUzytkownika: string): string {
@@ -88,25 +88,25 @@ export class InvoiceProcessor {
   }
 
   WyliczDlaFaktury() {
-    this.Procent = this.Faktura.Vat / 100;
+    this.Procent = this.Invoice.Vat / 100;
     this.ProcentCaly = this.Procent + 1;
 
     this.FakturaPodsumowanie.Vat = 0;
     this.FakturaPodsumowanie.Netto = 0;
     this.FakturaPodsumowanie.Brutto = 0;
-    for (let i = 0; i < this.Faktura.Produkty.length; i++) {
+    for (let i = 0; i < this.Invoice.Products.length; i++) {
       this.FakturaPodsumowanie.Vat =
         this.FakturaPodsumowanie.Vat +
-        this.Faktura.Produkty[i].CenaNetto *
-          this.Faktura.Produkty[i].Ilosc *
+        this.Invoice.Products[i].NettoPrice *
+          this.Invoice.Products[i].Quantity *
           this.Procent;
       this.FakturaPodsumowanie.Netto =
         this.FakturaPodsumowanie.Netto +
-        this.Faktura.Produkty[i].CenaNetto * this.Faktura.Produkty[i].Ilosc;
+        this.Invoice.Products[i].NettoPrice * this.Invoice.Products[i].Quantity;
       this.FakturaPodsumowanie.Brutto =
         this.FakturaPodsumowanie.Brutto +
-        this.Faktura.Produkty[i].CenaNetto *
-          this.Faktura.Produkty[i].Ilosc *
+        this.Invoice.Products[i].NettoPrice *
+          this.Invoice.Products[i].Quantity *
           this.ProcentCaly;
     }
     this.FakturaPodsumowanie.Vat = this.precisionRound(
@@ -130,7 +130,7 @@ export class InvoiceProcessor {
   Usun(faktura: Invoice) {
     this.repoFaktur.Usun(faktura);
   }
-  UsunPoNazwie(faktura: Invoice) {
+  DeleteByName(faktura: Invoice) {
     this.repoFaktur.UsunPoNazwie(faktura);
   }
 }
