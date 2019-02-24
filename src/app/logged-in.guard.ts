@@ -1,21 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot
-} from '@angular/router';
-import { LogowanieUzytkownika } from './pomoce/LogowanieUzytkownika';
-import { Observable } from 'rxjs';
+} from "@angular/router";
+import { Observable } from "rxjs";
+import { UserAuthorizer } from "./helpers/user.authorizer";
 
 @Injectable()
 export class LoggedInGuard implements CanActivate {
-  constructor(private logowanieUzytkownika: LogowanieUzytkownika) { }
+  constructor(private userAuthorizer: UserAuthorizer) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    const jestZalogowany = this.logowanieUzytkownika.JestZalogowany();
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    const isLogged = this.userAuthorizer.JestZalogowany();
 
-    return jestZalogowany;
+    return isLogged;
   }
 }

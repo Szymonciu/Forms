@@ -1,32 +1,26 @@
-import { Component } from '@angular/core';
-import {
-  Router
-} from '@angular/router';
-import { LogowanieUzytkownika } from "./pomoce/LogowanieUzytkownika";
+import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { UserAuthorizer } from "./helpers/user.authorizer";
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"]
 })
 export class AppComponent {
   zalogowany: String;
-  constructor(private router: Router, private logowanieUzytkownika: LogowanieUzytkownika) {
-
-  };
-  link = "Strona główna"
-  title = 'app';
+  constructor(private router: Router, private userAuthorizer: UserAuthorizer) {}
+  link = "Strona główna";
+  title = "app";
   wezZalogowanego() {
-    if (this.logowanieUzytkownika.JestZalogowany()) {
-      this.zalogowany = this.logowanieUzytkownika.ZalogowanyUzytkownik().Login;
+    if (this.userAuthorizer.JestZalogowany()) {
+      this.zalogowany = this.userAuthorizer.ZalogowanyUzytkownik().Login;
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
 
   wyloguj() {
-    if (this.logowanieUzytkownika.JestZalogowany())
-      this.logowanieUzytkownika.Wyloguj();
+    if (this.userAuthorizer.JestZalogowany()) this.userAuthorizer.Wyloguj();
   }
 }
