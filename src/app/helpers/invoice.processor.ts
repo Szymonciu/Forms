@@ -61,10 +61,10 @@ export class InvoiceProcessor {
     var user = this.userRepository.Get(invoice.Login);
     var client = this.clientRepository.Get(invoice.ClientLogin);
     var products = new Array<Product>();
-    for (let i = 0; i < invoice.Products.length; i++) {
-      let product = this.productRepository.Get(invoice.Products[i].Name);
+    for (let i = 0; i < invoice.ProductIds.length; i++) {
+      let product = this.productRepository.Get(invoice.ProductIds[i].Name);
       if (product != undefined && product != null) {
-        product.Quantity = invoice.Products[i].Quantity;
+        product.Quantity = invoice.ProductIds[i].Quantity;
         products.push(product);
       }
     }

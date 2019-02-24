@@ -39,7 +39,7 @@ export class ClientRepository {
     var clients = this.tmpRepo.Get(this.prfix);
     if (clients.length > 0) {
       for (let i = 0; i < clients.length; i++) {
-        if (clients[i].Nazwa == name) {
+        if (clients[i].Name == name) {
           return clients[i];
         }
       }
