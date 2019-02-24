@@ -28,38 +28,38 @@ import { ProductProcessor } from "../helpers/product.processor";
 })
 export class InvoiceAddComponent implements OnInit {
   vat = 23;
-  brakKlienta;
-  brakProduktu;
+  noClients;
+  noProducts;
   error = false;
-  zdefiniowanaDialof: MatDialogRef<DefinedInvoiceDialog>;
-  faktura: Invoice;
-  procentVat = 0.23;
-  procentVatCaly = 1.23;
-  zdefinowano = false;
-  nrFaktury: string;
-  uzytkownik: User;
-  klienci: Array<Client>;
-  produkty: Array<Product>;
-  produktyWybrane: Array<Product>;
-  wybranyKlient = {
+  definedInvoiceDialog: MatDialogRef<DefinedInvoiceDialog>;
+  invoice: Invoice;
+  vatPercent = 0.23;
+  vatPercentOverall = 1.23;
+  defined = false;
+  invoiceNumber: string;
+  user: User;
+  clients: Array<Client>;
+  products: Array<Product>;
+  choosedProducts: Array<Product>;
+  choosedClient = {
     TaxId: null,
     Address: null,
     CompanyName: null,
     Name: null
   };
-  podsumowanie = {
+  summary = {
     Vat: null,
     Brutto: null,
     Netto: null
   };
-  pokazFormularzKlienta = false;
-  udaloSieDodacKlienta = false;
-  udaloSieDodacProdukt = false;
-  pokazFakture = false;
-  blad = false;
-  komendaStworzeniaKlienta: ClientAddCommand;
-  komendaStworzeniaFaktury: InvoiceAddCommand;
-  komendaStworzeniaProduktu: ProductAddCommand;
+  showClientForm = false;
+  addClientSuccessful = false;
+  addProductSuccessful = false;
+  showInvoice = false;
+  isError = false;
+  clientAddCommand: ClientAddCommand;
+  invoiceAddCommand: InvoiceAddCommand;
+  productAddCommand: ProductAddCommand;
   toppings: FormControl = new FormControl();
   filteredOptions: Observable<Array<Client>>;
 
@@ -67,78 +67,78 @@ export class InvoiceAddComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private przetFaktury: InvoiceProcessor,
-    private przetKlienta: ClientProcessor,
-    private logowanieUzytkownika: UserAuthorizer,
-    private przetProduktu: ProductProcessor
+    private invoiceProcessor: InvoiceProcessor,
+    private clientProcessor: ClientProcessor,
+    private userAuthorizer: UserAuthorizer,
+    private productProcessor: ProductProcessor
   ) {
-    this.komendaStworzeniaKlienta = new ClientAddCommand();
-    this.komendaStworzeniaFaktury = new InvoiceAddCommand();
+    this.clientAddCommand = new ClientAddCommand();
+    this.invoiceAddCommand = new InvoiceAddCommand();
     var now = new Date();
-    this.komendaStworzeniaFaktury.PaymentDate = now;
-    this.komendaStworzeniaFaktury.CreatedDate = now;
-    this.komendaStworzeniaProduktu = new ProductAddCommand();
-    this.produktyWybrane = new Array<Product>();
-    this.uzytkownik = logowanieUzytkownika.getCurrentuser();
-    this.pobierzKlientów();
-    this.pobierzProdukty();
-    this.nrFaktury = this.przetFaktury.WygenerujNumerFaktury(
-      this.uzytkownik.Login
+    this.invoiceAddCommand.PaymentDate = now;
+    this.invoiceAddCommand.CreatedDate = now;
+    this.productAddCommand = new ProductAddCommand();
+    this.choosedProducts = new Array<Product>();
+    this.user = userAuthorizer.GetCurrentUser();
+    this.getClients();
+    this.getProducts();
+    this.invoiceNumber = this.invoiceProcessor.GenerateInvoiceNumber(
+      this.user.Login
     );
-    this.czyZdefiniowana();
+    this.isDefined();
   }
 
-  pobierzKlientów() {
-    this.klienci = this.przetKlienta.Get(this.uzytkownik.Login);
+  getClients() {
+    this.clients = this.clientProcessor.Get(this.user.Login);
   }
-  czyZdefiniowana() {
-    if (this.przetFaktury.Defined) {
-      var fakturaZapisana = this.przetFaktury.Invoice;
-      this.wybierzKlienta(fakturaZapisana.Client);
-      this.komendaStworzeniaFaktury.PaymentType = fakturaZapisana.PaymentType;
-      this.komendaStworzeniaFaktury.Vat = fakturaZapisana.Vat;
-      this.vat = fakturaZapisana.Vat;
-      for (let i = 0; i < fakturaZapisana.Products.length; i++) {
-        this.produktyWybrane.push(fakturaZapisana.Products[i]);
+  isDefined() {
+    if (this.invoiceProcessor.Defined) {
+      var invoiceSaved = this.invoiceProcessor.Invoice;
+      this.chooseClient(invoiceSaved.Client);
+      this.invoiceAddCommand.PaymentType = invoiceSaved.PaymentType;
+      this.invoiceAddCommand.Vat = invoiceSaved.Vat;
+      this.vat = invoiceSaved.Vat;
+      for (let i = 0; i < invoiceSaved.Products.length; i++) {
+        this.choosedProducts.push(invoiceSaved.Products[i]);
       }
 
-      this.wyliczPodsumowanie();
-      this.komendaStworzeniaFaktury.Products = this.produktyWybrane;
+      this.calculateSummary();
+      this.invoiceAddCommand.Products = this.choosedProducts;
     }
-    this.przetFaktury.Defined = false;
+    this.invoiceProcessor.Defined = false;
   }
 
-  otworzDialog() {
-    if (this.sprawdz()) {
+  openDialog() {
+    if (this.check()) {
       this.snackBar.open("Uzupełnij wymagane pola!", "", {
         duration: 2000
       });
       return;
     }
-    this.zdefiniowanaDialof = this.dialog.open(DefinedInvoiceDialog, {
+    this.definedInvoiceDialog = this.dialog.open(DefinedInvoiceDialog, {
       hasBackdrop: false
     });
 
-    this.zdefiniowanaDialof
+    this.definedInvoiceDialog
       .afterClosed()
       .pipe(filter(name => name))
       .subscribe(name => {
-        this.komendaStworzeniaFaktury.Name = name;
-        this.zdefinuj();
+        this.invoiceAddCommand.Name = name;
+        this.define();
       });
   }
 
-  dodajKlienta() {
-    this.komendaStworzeniaKlienta.Login = this.uzytkownik.Login;
-    var result = this.przetKlienta.Dodaj(this.komendaStworzeniaKlienta);
+  addClient() {
+    this.clientAddCommand.Login = this.user.Login;
+    var result = this.clientProcessor.Add(this.clientAddCommand);
 
     if (result) {
-      this.komendaStworzeniaKlienta = new ClientAddCommand();
-      this.udaloSieDodacKlienta = true;
+      this.clientAddCommand = new ClientAddCommand();
+      this.addClientSuccessful = true;
       this.snackBar.open("Dodano nowego klienta!", "", {
         duration: 2000
       });
-      this.pobierzKlientów();
+      this.getClients();
     } else {
       this.snackBar.open("Nie udało się!", "", {
         duration: 2000
@@ -146,26 +146,26 @@ export class InvoiceAddComponent implements OnInit {
     }
   }
 
-  ustawVat(value) {
-    this.procentVat = value / 100;
-    this.procentVatCaly = 1 + this.procentVat;
-    this.przetFaktury.Procent = this.procentVat;
-    this.przetFaktury.ProcentCaly = this.procentVatCaly;
+  setVat(value) {
+    this.vatPercent = value / 100;
+    this.vatPercentOverall = 1 + this.vatPercent;
+    this.invoiceProcessor.Percent = this.vatPercent;
+    this.invoiceProcessor.PercentOverall = this.vatPercentOverall;
   }
 
-  pobierzProdukty() {
-    this.produkty = this.przetProduktu.Get(this.uzytkownik.Login);
-    console.log(this.produkty);
+  getProducts() {
+    this.products = this.productProcessor.Get(this.user.Login);
+    console.log(this.products);
   }
 
-  dodajProdukt() {
-    this.komendaStworzeniaProduktu.Login = this.uzytkownik.Login;
-    var result = this.przetProduktu.Dodaj(this.komendaStworzeniaProduktu);
+  addProduct() {
+    this.productAddCommand.Login = this.user.Login;
+    var result = this.productProcessor.Add(this.productAddCommand);
 
     if (result) {
-      this.komendaStworzeniaProduktu = new ProductAddCommand();
-      this.udaloSieDodacProdukt = true;
-      this.pobierzProdukty();
+      this.productAddCommand = new ProductAddCommand();
+      this.addProductSuccessful = true;
+      this.getProducts();
       this.snackBar.open("Dodano nowy produkt!", "", {
         duration: 2000
       });
@@ -176,123 +176,124 @@ export class InvoiceAddComponent implements OnInit {
     }
   }
 
-  wyliczPodsumowanie() {
-    this.podsumowanie.Vat = 0;
-    this.podsumowanie.Netto = 0;
-    this.podsumowanie.Brutto = 0;
-    for (let i = 0; i < this.produktyWybrane.length; i++) {
-      this.podsumowanie.Vat =
-        this.podsumowanie.Vat +
-        this.produktyWybrane[i].NettoPrice *
-          this.produktyWybrane[i].Quantity *
-          this.procentVat;
-      this.podsumowanie.Netto =
-        this.podsumowanie.Netto +
-        this.produktyWybrane[i].NettoPrice * this.produktyWybrane[i].Quantity;
-      this.podsumowanie.Brutto =
-        this.podsumowanie.Brutto +
-        this.produktyWybrane[i].NettoPrice *
-          this.produktyWybrane[i].Quantity *
-          this.procentVatCaly;
+  calculateSummary() {
+    this.summary.Vat = 0;
+    this.summary.Netto = 0;
+    this.summary.Brutto = 0;
+    for (let i = 0; i < this.choosedProducts.length; i++) {
+      this.summary.Vat =
+        this.summary.Vat +
+        this.choosedProducts[i].NettoPrice *
+          this.choosedProducts[i].Quantity *
+          this.vatPercent;
+      this.summary.Netto =
+        this.summary.Netto +
+        this.choosedProducts[i].NettoPrice * this.choosedProducts[i].Quantity;
+      this.summary.Brutto =
+        this.summary.Brutto +
+        this.choosedProducts[i].NettoPrice *
+          this.choosedProducts[i].Quantity *
+          this.vatPercentOverall;
     }
-    this.podsumowanie.Vat = this.precisionRound(this.podsumowanie.Vat, 2);
-    this.podsumowanie.Netto = this.precisionRound(this.podsumowanie.Netto, 2);
-    this.podsumowanie.Brutto = this.precisionRound(this.podsumowanie.Brutto, 2);
+    this.summary.Vat = this.precisionRound(this.summary.Vat, 2);
+    this.summary.Netto = this.precisionRound(this.summary.Netto, 2);
+    this.summary.Brutto = this.precisionRound(this.summary.Brutto, 2);
 
-    this.przetFaktury.FakturaPodsumowanie = this.podsumowanie;
+    this.invoiceProcessor.InvoiceSummary = this.summary;
   }
 
-  wybierzKlienta(klient: Client) {
-    this.wybranyKlient = klient;
-    this.komendaStworzeniaFaktury.ClientLogin = klient.Name;
+  chooseClient(client: Client) {
+    this.choosedClient = client;
+    this.invoiceAddCommand.ClientLogin = client.Name;
   }
 
-  wybierzProdukty(produkt: Product) {
-    if (this.produktyWybrane.includes(produkt)) this.usunProdukt(produkt);
+  chooseProducts(product: Product) {
+    if (this.choosedProducts.includes(product)) this.deleteProduct(product);
     else {
-      produkt.Quantity = 1;
-      this.produktyWybrane.push(produkt);
+      product.Quantity = 1;
+      this.choosedProducts.push(product);
     }
-    this.wyliczPodsumowanie();
-    this.komendaStworzeniaFaktury.Products = this.produktyWybrane;
+    this.calculateSummary();
+    this.invoiceAddCommand.Products = this.choosedProducts;
   }
 
-  usunProdukt(produkt: Product) {
-    var index = this.produktyWybrane.indexOf(produkt, 0);
+  deleteProduct(produkt: Product) {
+    var index = this.choosedProducts.indexOf(produkt, 0);
     if (index > -1) {
-      this.produktyWybrane.splice(index, 1);
+      this.choosedProducts.splice(index, 1);
     }
   }
 
-  wystawFakture() {
-    if (this.sprawdz()) {
+  sendInvoice() {
+    if (this.check()) {
       this.snackBar.open("Uzupełnij wymagane pola!", "", {
         duration: 2000
       });
       return;
     }
-    if (this.zdefinowano != true) {
-      this.faktura = this.nowaFaktura(false);
+    if (this.defined != true) {
+      this.invoice = this.newInvoice(false);
       this.router.navigate(["faktura"]);
     } else {
       this.router.navigate(["faktura"]);
     }
   }
-  zdefinuj() {
-    if (this.sprawdz()) {
+
+  define() {
+    if (this.check()) {
       this.snackBar.open("Uzupełnij wymagane pola!", "", {
         duration: 2000
       });
       return;
     }
 
-    this.faktura = this.nowaFaktura(true);
-    this.zdefinowano = true;
+    this.invoice = this.newInvoice(true);
+    this.defined = true;
     this.snackBar.open("Zapisano fakture!", "", {
       duration: 2000
     });
   }
 
-  sprawdz() {
+  check() {
     if (
-      this.komendaStworzeniaFaktury.ClientLogin === null ||
-      this.komendaStworzeniaFaktury.ClientLogin === undefined ||
-      this.komendaStworzeniaFaktury.ClientLogin == ""
+      this.invoiceAddCommand.ClientLogin === null ||
+      this.invoiceAddCommand.ClientLogin === undefined ||
+      this.invoiceAddCommand.ClientLogin == ""
     )
       return true;
     if (
-      this.komendaStworzeniaFaktury.CreatedDate === null ||
-      this.komendaStworzeniaFaktury.CreatedDate === undefined ||
-      this.komendaStworzeniaFaktury.PaymentDate == null ||
-      this.komendaStworzeniaFaktury.PaymentDate == undefined
+      this.invoiceAddCommand.CreatedDate === null ||
+      this.invoiceAddCommand.CreatedDate === undefined ||
+      this.invoiceAddCommand.PaymentDate == null ||
+      this.invoiceAddCommand.PaymentDate == undefined
     )
       return true;
     if (
-      this.komendaStworzeniaFaktury.Products === null ||
-      this.komendaStworzeniaFaktury.Products === undefined ||
-      this.komendaStworzeniaFaktury.Products.length <= 0
+      this.invoiceAddCommand.Products === null ||
+      this.invoiceAddCommand.Products === undefined ||
+      this.invoiceAddCommand.Products.length <= 0
     )
       return true;
   }
 
-  nowaFaktura(zdefinowano) {
-    this.komendaStworzeniaFaktury.Login = this.uzytkownik.Login;
-    this.komendaStworzeniaFaktury.InvoiceNumber = this.nrFaktury;
-    this.komendaStworzeniaFaktury.Vat = this.vat;
-    if (zdefinowano) {
-      this.komendaStworzeniaFaktury.Defined = true;
+  newInvoice(defined) {
+    this.invoiceAddCommand.Login = this.user.Login;
+    this.invoiceAddCommand.InvoiceNumber = this.invoiceNumber;
+    this.invoiceAddCommand.Vat = this.vat;
+    if (defined) {
+      this.invoiceAddCommand.Defined = true;
     }
 
-    this.przetFaktury.Dodaj(this.komendaStworzeniaFaktury);
+    this.invoiceProcessor.Add(this.invoiceAddCommand);
 
-    return this.przetFaktury.PobierzPoNumerze(
-      this.nrFaktury,
-      this.uzytkownik.Login
+    return this.invoiceProcessor.GetByNumber(
+      this.invoiceNumber,
+      this.user.Login
     );
   }
 
-  przelicz() {
-    this.wyliczPodsumowanie();
+  calculate() {
+    this.calculateSummary();
   }
 
   ngOnInit() {}
@@ -302,12 +303,13 @@ export class InvoiceAddComponent implements OnInit {
     return Math.round(number * factor) / factor;
   }
 
-  dopiszKlienta() {
-    if (this.klienci.length <= 0) this.brakKlienta = true;
-    else this.brakKlienta = false;
+  appendClient() {
+    if (this.clients.length <= 0) this.noClients = true;
+    else this.noClients = false;
   }
-  dopiszProdukt() {
-    if (this.produkty.length <= 0) this.brakProduktu = true;
-    else this.brakProduktu = false;
+
+  appendProduct() {
+    if (this.products.length <= 0) this.noProducts = true;
+    else this.noProducts = false;
   }
 }

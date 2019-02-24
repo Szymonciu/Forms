@@ -16,19 +16,19 @@ export class ClientEditDialog implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      nazwaFirmy: this.data.nazwaFirmy,
-      adres: this.data.adres,
-      nrBanku: this.data.nrBankuo,
-      nip: this.data.nip
+      companyName: this.data.companyName,
+      address: this.data.address,
+      accountNumber: this.data.accountNumber,
+      taxId: this.data.taxId
     });
   }
 
   submit(form) {
     var rezult = {
-      nrBanku: form.value.nrBanku,
-      nazwaFirmy: form.value.nazwaFirmy,
-      adres: form.value.adres,
-      nip: form.value.nip
+      accountNumber: form.value.accountNumber,
+      companyName: form.value.companyName,
+      address: form.value.address,
+      taxId: form.value.taxId
     };
     this.dialogRef.close(rezult);
   }

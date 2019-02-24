@@ -7,20 +7,20 @@ import { UserAuthorizer } from "./helpers/user.authorizer";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent {
-  zalogowany: String;
+  loggedUser: String;
   constructor(private router: Router, private userAuthorizer: UserAuthorizer) {}
   link = "Strona główna";
   title = "app";
-  wezZalogowanego() {
-    if (this.userAuthorizer.JestZalogowany()) {
-      this.zalogowany = this.userAuthorizer.getCurrentuser().Login;
+  getLoggeduser() {
+    if (this.userAuthorizer.IsLogged()) {
+      this.loggedUser = this.userAuthorizer.GetCurrentUser().Login;
       return true;
     } else {
       return false;
     }
   }
 
-  wyloguj() {
-    if (this.userAuthorizer.JestZalogowany()) this.userAuthorizer.Wyloguj();
+  logOut() {
+    if (this.userAuthorizer.IsLogged()) this.userAuthorizer.LogOut();
   }
 }

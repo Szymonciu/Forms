@@ -6,92 +6,92 @@ import { ClientEditCommand } from "../commands/client.edit.command";
 
 @Injectable()
 export class ClientRepository {
-  prfix = "Klienci";
+  prfix = "Clients";
   constructor(public tmpRepo: LocalDB) {
     if (tmpRepo.Get(this.prfix) == null) {
-      var Klienci = new Array<Client>();
-      this.tmpRepo.Add(this.prfix, Klienci);
+      var Clients = new Array<Client>();
+      this.tmpRepo.Add(this.prfix, Clients);
     }
   }
 
-  Dodaj(komenda: ClientAddCommand): boolean {
-    var klient = this.Pobierz(komenda.Name);
-    if (klient !== null) return false;
+  Add(command: ClientAddCommand): boolean {
+    var client = this.Get(command.Name);
+    if (client !== null) return false;
 
-    klient = new Client(
-      komenda.Login,
-      komenda.Description,
-      komenda.Name,
-      komenda.AccountNumber,
-      komenda.Address,
-      komenda.TaxId,
-      komenda.CompanyName
+    client = new Client(
+      command.Login,
+      command.Description,
+      command.Name,
+      command.AccountNumber,
+      command.Address,
+      command.TaxId,
+      command.CompanyName
     );
 
-    var klienci = this.tmpRepo.Get(this.prfix);
-    klienci.push(klient);
+    var clients = this.tmpRepo.Get(this.prfix);
+    clients.push(client);
 
-    this.tmpRepo.Add(this.prfix, klienci);
+    this.tmpRepo.Add(this.prfix, clients);
     return true;
   }
 
-  Pobierz(nazwa: string): Client {
-    var klienci = this.tmpRepo.Get(this.prfix);
-    if (klienci.length > 0) {
-      for (let i = 0; i < klienci.length; i++) {
-        if (klienci[i].Nazwa == nazwa) {
-          return klienci[i];
+  Get(name: string): Client {
+    var clients = this.tmpRepo.Get(this.prfix);
+    if (clients.length > 0) {
+      for (let i = 0; i < clients.length; i++) {
+        if (clients[i].Nazwa == name) {
+          return clients[i];
         }
       }
     }
     return null;
   }
 
-  PobierzDlaUzytkownika(login: string): Array<Client> {
-    var klienciDlaUzytkownika = new Array<Client>();
-    var klienci = this.tmpRepo.Get(this.prfix);
-    if (klienci.length > 0) {
-      for (let i = 0; i < klienci.length; i++) {
-        if (klienci[i].LoginUzytkownika == login) {
-          klienciDlaUzytkownika.push(klienci[i]);
+  GetForUser(login: string): Array<Client> {
+    var clientsForUser = new Array<Client>();
+    var clients = this.tmpRepo.Get(this.prfix);
+    if (clients.length > 0) {
+      for (let i = 0; i < clients.length; i++) {
+        if (clients[i].Login == login) {
+          clientsForUser.push(clients[i]);
         }
       }
     }
-    return klienciDlaUzytkownika;
+    return clientsForUser;
   }
 
-  PobierzWszystkie(): Array<Client> {
-    var klienci = this.tmpRepo.Get(this.prfix);
-    return klienci;
+  GetAll(): Array<Client> {
+    var clients = this.tmpRepo.Get(this.prfix);
+    return clients;
   }
 
-  UsunPoNazwie(klient: Client) {
+  DeleteByName(client: Client) {
     var indexOf;
-    var klienci = this.PobierzWszystkie();
-    for (let i = 0; i < klienci.length; i++) {
-      if (klienci[i].Name == klient.Name && klienci[i].Login == klient.Login)
+    var clients = this.GetAll();
+    for (let i = 0; i < clients.length; i++) {
+      if (clients[i].Name == client.Name && clients[i].Login == client.Login)
         indexOf = i;
     }
-    klienci.splice(indexOf, 1);
-    this.tmpRepo.Add(this.prfix, klienci);
+    clients.splice(indexOf, 1);
+    this.tmpRepo.Add(this.prfix, clients);
     return true;
   }
 
-  Edytuj(komenda: ClientEditCommand) {
-    var klienci = this.PobierzWszystkie();
-    var klient: Client;
+  Edit(command: ClientEditCommand) {
+    var clients = this.GetAll();
+    var client: Client;
 
-    for (let i = 0; i < klienci.length; i++) {
-      if (klienci[i].Name == komenda.Name && klienci[i].Login == komenda.Login)
-        klient = klienci[i];
+    for (let i = 0; i < clients.length; i++) {
+      if (clients[i].Name == command.Name && clients[i].Login == command.Login)
+        client = clients[i];
     }
 
-    klient.Address = komenda.Address;
-    klient.AccountNumber = komenda.AccountNumber;
-    klient.TaxId = komenda.TaxId;
-    klient.CompanyName = komenda.CompanyName;
+    client.Address = command.Address;
+    client.AccountNumber = command.AccountNumber;
+    client.TaxId = command.TaxId;
+    client.CompanyName = command.CompanyName;
 
-    this.tmpRepo.Add(this.prfix, klienci);
+    this.tmpRepo.Add(this.prfix, clients);
     return true;
   }
 }

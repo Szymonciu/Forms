@@ -16,17 +16,17 @@ export class ProductEditDialog implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      nazwa: this.data.nazwa,
-      cenaNetto: this.data.cenaNetto,
-      jednostkaMiary: this.data.jednostkaMiary
+      name: this.data.name,
+      nettoPrice: this.data.nettoPrice,
+      unit: this.data.unit
     });
   }
 
   submit(form) {
     var rezult = {
-      nazwa: form.value.nazwa,
-      cenaNetto: form.value.cenaNetto,
-      jednostkaMiary: form.value.jednostkaMiary
+      name: form.value.name,
+      nettoPrice: form.value.nettoPrice,
+      unit: form.value.unit
     };
     this.dialogRef.close(rezult);
   }

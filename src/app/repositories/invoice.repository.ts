@@ -5,135 +5,132 @@ import { Invoice } from "../models/invoice";
 
 @Injectable()
 export class InvoiceRepository {
-  prfix = "Faktury";
+  prfix = "Invoices";
   constructor(public tmpRepo: LocalDB) {
     if (tmpRepo.Get(this.prfix) == null) {
-      var Faktury = new Array<Invoice>();
-      this.tmpRepo.Add(this.prfix, Faktury);
+      var invoices = new Array<Invoice>();
+      this.tmpRepo.Add(this.prfix, invoices);
     }
   }
 
-  Dodaj(komenda: InvoiceAddCommand): boolean {
-    var faktura: Invoice;
+  Add(command: InvoiceAddCommand): boolean {
+    var invoice: Invoice;
     var isDefined = false;
-    if (komenda.Name != undefined && komenda.Name != null) {
-      faktura = this.Pobierz(komenda.Name);
+    if (command.Name != undefined && command.Name != null) {
+      invoice = this.Get(command.Name);
       isDefined = true;
-      if (faktura !== null) return false;
+      if (invoice !== null) return false;
     }
 
-    faktura = new Invoice(
-      komenda.InvoiceNumber,
-      komenda.Login,
-      komenda.ClientLogin,
-      komenda.CreatedDate,
-      komenda.Products,
-      komenda.PaymentType,
-      komenda.PaymentDate
+    invoice = new Invoice(
+      command.InvoiceNumber,
+      command.Login,
+      command.ClientLogin,
+      command.CreatedDate,
+      command.Products,
+      command.PaymentType,
+      command.PaymentDate
     );
-    faktura.Value = komenda.Value;
-    faktura.Defined = komenda.Defined;
-    faktura.Vat = komenda.Vat;
+    invoice.Value = command.Value;
+    invoice.Defined = command.Defined;
+    invoice.Vat = command.Vat;
 
     if (isDefined) {
-      faktura.Name = komenda.Name;
-      faktura.Description = komenda.Description;
+      invoice.Name = command.Name;
+      invoice.Description = command.Description;
     }
 
-    var faktury = this.tmpRepo.Get(this.prfix);
-    faktury.push(faktura);
+    var invoices = this.tmpRepo.Get(this.prfix);
+    invoices.push(invoice);
 
-    this.tmpRepo.Add(this.prfix, faktury);
+    this.tmpRepo.Add(this.prfix, invoices);
     return true;
   }
 
-  Pobierz(nazwa: string): Invoice {
-    var faktury = this.tmpRepo.Get(this.prfix);
-    if (faktury.length > 0) {
-      for (let i = 0; i < faktury.length; i++) {
-        if (faktury[i].Nazwa == nazwa) {
-          return faktury[i];
+  Get(name: string): Invoice {
+    var invoices = this.tmpRepo.Get(this.prfix);
+    if (invoices.length > 0) {
+      for (let i = 0; i < invoices.length; i++) {
+        if (invoices[i].Nazwa == name) {
+          return invoices[i];
         }
       }
     }
     return null;
   }
 
-  PobierzPoNumerze(numerFaktury: string, loginUzytkownika: string): Invoice {
-    var faktury = this.tmpRepo.Get(this.prfix);
-    if (faktury.length > 0) {
-      for (let i = 0; i < faktury.length; i++) {
+  GetByNumber(invoiceNumber: string, login: string): Invoice {
+    var invoices = this.tmpRepo.Get(this.prfix);
+    if (invoices.length > 0) {
+      for (let i = 0; i < invoices.length; i++) {
         if (
-          faktury[i].NumerFaktury == numerFaktury &&
-          faktury[i].LoginUzytkownika == loginUzytkownika
+          invoices[i].InvoiceNumber == invoiceNumber &&
+          invoices[i].Login == login
         ) {
-          return faktury[i];
+          return invoices[i];
         }
       }
     }
     return null;
   }
 
-  PobierzDlaUzytkownika(login: string): Array<Invoice> {
-    var fakturyDlaUzytkownika = new Array<Invoice>();
-    var faktury = this.tmpRepo.Get(this.prfix);
-    if (faktury.length > 0) {
-      for (let i = 0; i < faktury.length; i++) {
-        if (faktury[i].LoginUzytkownika == login) {
-          fakturyDlaUzytkownika.push(faktury[i]);
+  GetForUser(login: string): Array<Invoice> {
+    var invoicesForUser = new Array<Invoice>();
+    var invoices = this.tmpRepo.Get(this.prfix);
+    if (invoices.length > 0) {
+      for (let i = 0; i < invoices.length; i++) {
+        if (invoices[i].Login == login) {
+          invoicesForUser.push(invoices[i]);
         }
       }
     }
-    return fakturyDlaUzytkownika;
+    return invoicesForUser;
   }
 
-  PobierzZdefiniowane(loginUzytkownika: string): Array<Invoice> {
-    var fakturyDlaUzytkownika = new Array<Invoice>();
-    var faktury = this.tmpRepo.Get(this.prfix);
-    if (faktury.length > 0) {
-      for (let i = 0; i < faktury.length; i++) {
-        if (
-          faktury[i].Zdefiniowana === true &&
-          faktury[i].LoginUzytkownika == loginUzytkownika
-        ) {
-          faktury[i].NumerFaktury = "";
-          fakturyDlaUzytkownika.push(faktury[i]);
+  GetDefined(login: string): Array<Invoice> {
+    var invoicesForUser = new Array<Invoice>();
+    var invoices = this.tmpRepo.Get(this.prfix);
+    if (invoices.length > 0) {
+      for (let i = 0; i < invoices.length; i++) {
+        if (invoices[i].Defined === true && invoices[i].Login == login) {
+          invoices[i].InvoiceNumber = "";
+          invoicesForUser.push(invoices[i]);
         }
       }
     }
-    return fakturyDlaUzytkownika;
+    return invoicesForUser;
   }
 
-  Usun(faktura: Invoice) {
-    var faktury = this.tmpRepo.Get(this.prfix);
+  Delete(invoice: Invoice) {
+    var invoices = this.tmpRepo.Get(this.prfix);
     var indexOf = -1;
-    for (let i = 0; i < faktury.length; i++) {
+    for (let i = 0; i < invoices.length; i++) {
       if (
-        faktury[i].NumerFaktury === faktura.InvoiceNumber &&
-        faktury[i].LoginUzytkownika == faktura.Login
+        invoices[i].InvoiceNumber === invoice.InvoiceNumber &&
+        invoices[i].Login == invoice.Login
       )
         indexOf = i;
     }
-    if (indexOf != -1) faktury.splice(indexOf, 1);
+    if (indexOf != -1) invoices.splice(indexOf, 1);
 
-    this.tmpRepo.Add(this.prfix, faktury);
+    this.tmpRepo.Add(this.prfix, invoices);
     return true;
   }
 
-  UsunPoNazwie(faktura: Invoice) {
-    var faktury = this.tmpRepo.Get(this.prfix);
+  DeleteByName(invoice: Invoice) {
+    var invoices = this.tmpRepo.Get(this.prfix);
     var indexOf = -1;
-    for (let i = 0; i < faktury.length; i++) {
+    for (let i = 0; i < invoices.length; i++) {
       if (
-        faktury[i].Nazwa === faktura.Name &&
-        faktury[i].LoginUzytkownika == faktura.Login &&
-        faktury[i].Zdefiniowana == true
+        invoices[i].Name === invoice.Name &&
+        invoices[i].Login == invoice.Login &&
+        invoices[i].Defined == true
       )
         indexOf = i;
     }
-    if (indexOf != -1) faktury.splice(indexOf, 1);
+    if (indexOf != -1) invoices.splice(indexOf, 1);
 
-    this.tmpRepo.Add(this.prfix, faktury);
+    this.tmpRepo.Add(this.prfix, invoices);
     return true;
   }
 }

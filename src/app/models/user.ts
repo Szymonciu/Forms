@@ -6,7 +6,7 @@ export class User extends TaxPayer {
 
   constructor(
     public Login: string,
-    public Haslo: string,
+    public Password: string,
     accountNumber: string,
     address: string,
     taxId: string,

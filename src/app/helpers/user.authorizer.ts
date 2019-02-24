@@ -10,56 +10,49 @@ import { PasswordEditCommand } from "../commands/password.edit.command";
 
 @Injectable()
 export class UserAuthorizer {
-  użytkownik: User;
+  user: User;
   constructor(
     public matSnar: MatSnackBar,
-    public repoUzytkowników: UserRepository,
+    public userRepository: UserRepository,
     public local: LocalDB
   ) {}
-  Zaloguj(komenda: AuthorizeCommand) {
-    var użytkownik = this.repoUzytkowników.Pobierz(komenda.Login);
-    if (użytkownik == null || użytkownik == undefined) return false;
-    if (użytkownik.Haslo == komenda.password) {
-      this.local.Authorize(użytkownik.Login);
-      this.użytkownik = użytkownik;
+
+  LogIn(command: AuthorizeCommand) {
+    var user = this.userRepository.Get(command.Login);
+    if (user == null || user == undefined) return false;
+    if (user.Password == command.password) {
+      this.local.Authorize(user.Login);
+      this.user = user;
     } else {
       return false;
     }
   }
-  Wyloguj() {
-    this.użytkownik = null;
+
+  LogOut() {
+    this.user = null;
     this.local.Logout();
   }
 
-  Zarejestruj(komenda: RegisterCommand) {
-    if (this.repoUzytkowników.Dodaj(komenda)) return true;
+  Register(command: RegisterCommand) {
+    if (this.userRepository.Add(command)) return true;
     else return false;
   }
 
-  JestZalogowany() {
-    return this.użytkownik != null && this.użytkownik != undefined;
+  IsLogged() {
+    return this.user != null && this.user != undefined;
   }
 
-  getCurrentuser(): User {
-    return this.użytkownik;
+  GetCurrentUser(): User {
+    return this.user;
   }
 
-  Edytuj(komenda: UserEditCommand) {
-    if (this.repoUzytkowników.Edytuj(komenda)) return true;
+  Edit(command: UserEditCommand) {
+    if (this.userRepository.Edit(command)) return true;
     return false;
   }
 
-  ZmienHaslo(komenda: PasswordEditCommand) {
-    if (this.repoUzytkowników.ZmienHaslo(komenda)) return true;
+  ChangePassword(command: PasswordEditCommand) {
+    if (this.userRepository.ChangePassword(command)) return true;
     return false;
   }
-
-  // DodajKlientaDlaUzytkownika(komenda:KomendaDodaniaKlientaDlaUzytkownika){
-  //     var użytkownik = this.repoUzytkowników.Pobierz(komenda.LoginUzytkownika)
-
-  //     użytkownik.dodajKlienta(new Klient(komenda.Nazwa,komenda.Opis,komenda.NrKontaBankowego,komenda.Adres,komenda.Nip,komenda.NazwaFirmy));
-
-  //     this.repoUzytkowników.Zapisz(użytkownik);
-  //     this.użytkownik = użytkownik;
-  // }
 }

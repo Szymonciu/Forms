@@ -12,62 +12,59 @@ import { PasswordEditCommand } from "../commands/password.edit.command";
   styleUrls: ["./profile.component.css"]
 })
 export class ProfileComponent implements OnInit {
-  uzytkownik: User;
-  nrBanku;
-  adres;
-  nip;
-  nazwaFirmy;
-  noweHaslo;
-  noweHaslo2;
+  user: User;
+  accountNumber;
+  address;
+  taxId;
+  companyName;
+  newPassword;
+  newPassword2;
 
   constructor(
     public snackBar: MatSnackBar,
-    private logowanieUzytkownika: UserAuthorizer
+    private userAuthorizer: UserAuthorizer
   ) {
-    this.uzytkownik = logowanieUzytkownika.getCurrentuser();
-    this.nrBanku = this.uzytkownik.AccountNumber;
-    this.adres = this.uzytkownik.Address;
-    this.nip = this.uzytkownik.TaxId;
-    this.nazwaFirmy = this.uzytkownik.CompanyName;
-    this.nrBanku = this.uzytkownik.AccountNumber;
-    this.nrBanku = this.uzytkownik.AccountNumber;
+    this.user = userAuthorizer.GetCurrentUser();
+    this.accountNumber = this.user.AccountNumber;
+    this.address = this.user.Address;
+    this.taxId = this.user.TaxId;
+    this.companyName = this.user.CompanyName;
+    this.accountNumber = this.user.AccountNumber;
+    this.accountNumber = this.user.AccountNumber;
   }
 
-  edytuj() {
-    var komenda = new UserEditCommand(
-      this.uzytkownik.Login,
-      this.nrBanku,
-      this.adres,
-      this.nip,
-      this.nazwaFirmy
+  edit() {
+    var userEditCommand = new UserEditCommand(
+      this.user.Login,
+      this.accountNumber,
+      this.address,
+      this.taxId,
+      this.companyName
     );
-    var result = this.logowanieUzytkownika.Edytuj(komenda);
+    var result = this.userAuthorizer.Edit(userEditCommand);
     if (result == true) {
       this.snackBar.open("Dane zostały zmienione!", "", {
         duration: 2000
       });
-      this.logowanieUzytkownika.Zaloguj(
-        new AuthorizeCommand(this.uzytkownik.Login, this.uzytkownik.Haslo)
+      this.userAuthorizer.LogIn(
+        new AuthorizeCommand(this.user.Login, this.user.Password)
       );
-      this.uzytkownik = this.logowanieUzytkownika.getCurrentuser();
+      this.user = this.userAuthorizer.GetCurrentUser();
     }
   }
 
-  zmienHaslo() {
-    if (this.noweHaslo === this.noweHaslo2) {
-      var komenda = new PasswordEditCommand(
-        this.uzytkownik.Login,
-        this.noweHaslo
-      );
-      var result = this.logowanieUzytkownika.ZmienHaslo(komenda);
+  changePassword() {
+    if (this.newPassword === this.newPassword2) {
+      var command = new PasswordEditCommand(this.user.Login, this.newPassword);
+      var result = this.userAuthorizer.ChangePassword(command);
       if (result == true) {
         this.snackBar.open("Haslo zostalo zmienione!", "", {
           duration: 2000
         });
-        this.logowanieUzytkownika.Zaloguj(
-          new AuthorizeCommand(this.uzytkownik.Login, this.uzytkownik.Haslo)
+        this.userAuthorizer.LogIn(
+          new AuthorizeCommand(this.user.Login, this.user.Password)
         );
-        this.uzytkownik = this.logowanieUzytkownika.getCurrentuser();
+        this.user = this.userAuthorizer.GetCurrentUser();
       }
     } else {
       this.snackBar.open("Hasla musza byc takie same!", "", {

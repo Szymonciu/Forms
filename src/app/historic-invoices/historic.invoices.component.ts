@@ -10,26 +10,26 @@ import { Invoice } from "../models/invoice";
   styleUrls: ["./historic.invoices.component.css"]
 })
 export class HistoricInvoicesComponent implements OnInit {
-  faktury: Array<Invoice>;
+  invoices: Array<Invoice>;
   constructor(
     private router: Router,
-    public przetFaktur: InvoiceProcessor,
-    public logowanieUzyt: UserAuthorizer
+    public invoiceProcessor: InvoiceProcessor,
+    public userAuthorizer: UserAuthorizer
   ) {
-    this.faktury = przetFaktur.Pobierz(logowanieUzyt.getCurrentuser().Login);
+    this.invoices = invoiceProcessor.Get(userAuthorizer.GetCurrentUser().Login);
   }
 
-  wybierzFakture(faktura: Invoice) {
-    this.przetFaktur.Invoice = faktura;
-    this.przetFaktur.WyliczDlaFaktury();
+  chooseInvoice(invoice: Invoice) {
+    this.invoiceProcessor.Invoice = invoice;
+    this.invoiceProcessor.CalculateForInvoice();
     this.router.navigate(["faktura"]);
   }
   ngOnInit() {}
 
-  usun(faktura: Invoice) {
-    this.przetFaktur.Usun(faktura);
-    this.faktury = this.przetFaktur.Pobierz(
-      this.logowanieUzyt.getCurrentuser().Login
+  delete(invoice: Invoice) {
+    this.invoiceProcessor.Delete(invoice);
+    this.invoices = this.invoiceProcessor.Get(
+      this.userAuthorizer.GetCurrentUser().Login
     );
   }
 }

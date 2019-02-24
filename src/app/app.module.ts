@@ -62,7 +62,7 @@ import { ProductRepository } from "./repositories/product.repository";
 import { ProductProcessor } from "./helpers/product.processor";
 import { UserAuthorizer } from "./helpers/user.authorizer";
 
-const ścieżki: Routes = [
+const paths: Routes = [
   // basic routes
   { path: "", redirectTo: "dom", pathMatch: "full" },
   { path: "dom", component: HomeComponent },
@@ -142,7 +142,7 @@ const ścieżki: Routes = [
     HttpModule,
     MatDialogModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(ścieżki)
+    RouterModule.forRoot(paths)
   ],
   entryComponents: [ProductEditDialog, DefinedInvoiceDialog, ClientEditDialog],
   providers: [

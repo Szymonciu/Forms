@@ -10,20 +10,24 @@ import { InvoiceProcessor } from "../helpers/invoice.processor";
   styleUrls: ["./invoice.component.css"]
 })
 export class InvoiceComponent implements OnInit {
-  faktura: Invoice;
+  invoice: Invoice;
   vat;
-  vatCaly;
-  podsumowanie;
-  constructor(private router: Router, private przetFaktury: InvoiceProcessor) {}
+  vatOverall;
+  summary;
+  constructor(
+    private router: Router,
+    private invoiceProcessor: InvoiceProcessor
+  ) {}
 
   ngOnInit() {
-    this.faktura = this.przetFaktury.Invoice;
-    this.vat = this.przetFaktury.Procent;
-    this.vatCaly = this.przetFaktury.ProcentCaly;
-    this.podsumowanie = this.przetFaktury.FakturaPodsumowanie;
+    this.invoice = this.invoiceProcessor.Invoice;
+    this.vat = this.invoiceProcessor.Percent;
+    this.vatOverall = this.invoiceProcessor.PercentOverall;
+    this.summary = this.invoiceProcessor.InvoiceSummary;
   }
+
   print() {
-    var printContents = document.getElementById("FakturaPrint").innerHTML;
+    var printContents = document.getElementById("InvoicePrint").innerHTML;
     var originalContents = document.body.innerHTML;
 
     document.body.innerHTML = printContents;

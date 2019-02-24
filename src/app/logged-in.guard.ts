@@ -15,7 +15,7 @@ export class LoggedInGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    const isLogged = this.userAuthorizer.JestZalogowany();
+    const isLogged = this.userAuthorizer.IsLogged();
 
     return isLogged;
   }

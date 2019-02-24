@@ -6,30 +6,30 @@ import { ClientEditCommand } from "../commands/client.edit.command";
 
 @Injectable()
 export class ClientProcessor {
-  constructor(public repoKlientów: ClientRepository) {}
+  constructor(public clientRepository: ClientRepository) {}
 
   Get(login: string): Array<Client> {
-    return this.repoKlientów.PobierzDlaUzytkownika(login);
+    return this.clientRepository.GetForUser(login);
   }
 
-  Dodaj(komenda: ClientAddCommand): boolean {
-    var result = this.repoKlientów.Dodaj(komenda);
+  Add(command: ClientAddCommand): boolean {
+    var result = this.clientRepository.Add(command);
     if (result) {
       return true;
     }
     return false;
   }
 
-  DeleteByName(klient: Client) {
-    var result = this.repoKlientów.UsunPoNazwie(klient);
+  DeleteByName(client: Client) {
+    var result = this.clientRepository.DeleteByName(client);
     if (result) {
       return true;
     }
     return false;
   }
 
-  Edit(komenda: ClientEditCommand) {
-    var result = this.repoKlientów.Edytuj(komenda);
+  Edit(command: ClientEditCommand) {
+    var result = this.clientRepository.Edit(command);
     if (result) {
       return true;
     }

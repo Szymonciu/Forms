@@ -6,30 +6,30 @@ import { ProductEditCommand } from "../commands/product.edit.command";
 
 @Injectable()
 export class ProductProcessor {
-  constructor(public repoProduktów: ProductRepository) {}
+  constructor(public productRepository: ProductRepository) {}
 
   Get(login: string): Array<Product> {
-    return this.repoProduktów.PobierzDlaUzytkownika(login);
+    return this.productRepository.GetForUser(login);
   }
 
-  Dodaj(komenda: ProductAddCommand): boolean {
-    var result = this.repoProduktów.Dodaj(komenda);
+  Add(command: ProductAddCommand): boolean {
+    var result = this.productRepository.Add(command);
     if (result) {
       return true;
     }
     return false;
   }
 
-  DeleteByName(produkt: Product) {
-    var result = this.repoProduktów.UsunPoNazwie(produkt);
+  DeleteByName(product: Product) {
+    var result = this.productRepository.DeleteByName(product);
     if (result) {
       return true;
     }
     return false;
   }
 
-  Edit(komenda: ProductEditCommand) {
-    var result = this.repoProduktów.Edytuj(komenda);
+  Edit(command: ProductEditCommand) {
+    var result = this.productRepository.Edit(command);
     if (result) {
       return true;
     }

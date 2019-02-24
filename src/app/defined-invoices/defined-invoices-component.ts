@@ -37,7 +37,7 @@ export class DefinedInvoicesComponent implements OnInit {
     public invoiceProcessor: InvoiceProcessor,
     public userAuthorizer: UserAuthorizer
   ) {
-    this.user = userAuthorizer.getCurrentuser();
+    this.user = userAuthorizer.GetCurrentUser();
     this.invoices = invoiceProcessor.getDefined(this.user.Login);
     this.productEditCommand = new ProductEditCommand();
     this.clientEditCommand = new ClientEditCommand();
@@ -95,7 +95,7 @@ export class DefinedInvoicesComponent implements OnInit {
   delete(invoice: Invoice) {
     this.invoiceProcessor.DeleteByName(invoice);
     this.invoices = this.invoiceProcessor.getDefined(
-      this.userAuthorizer.getCurrentuser().Login
+      this.userAuthorizer.GetCurrentUser().Login
     );
   }
 

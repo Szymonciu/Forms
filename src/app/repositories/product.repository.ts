@@ -6,93 +6,93 @@ import { ProductEditCommand } from "../commands/product.edit.command";
 
 @Injectable()
 export class ProductRepository {
-  prfix = "Produkty";
+  prfix = "Products";
   constructor(public tmpRepo: LocalDB) {
     if (tmpRepo.Get(this.prfix) == null) {
-      var Produkty = new Array<Product>();
-      this.tmpRepo.Add(this.prfix, Produkty);
+      var products = new Array<Product>();
+      this.tmpRepo.Add(this.prfix, products);
     }
   }
 
-  Dodaj(komenda: ProductAddCommand): boolean {
-    var produkt = this.Pobierz(komenda.Name);
+  Add(command: ProductAddCommand): boolean {
+    var produkt = this.Get(command.Name);
     if (produkt !== null) return false;
 
-    produkt = new Product(komenda.Name);
-    produkt.Quantity = komenda.Quantity;
-    produkt.NettoPrice = komenda.NettoPrice;
-    produkt.Unit = komenda.Unit;
-    produkt.Login = komenda.Login;
+    produkt = new Product(command.Name);
+    produkt.Quantity = command.Quantity;
+    produkt.NettoPrice = command.NettoPrice;
+    produkt.Unit = command.Unit;
+    produkt.Login = command.Login;
 
-    var produkty = this.tmpRepo.Get(this.prfix);
-    produkty.push(produkt);
+    var products = this.tmpRepo.Get(this.prfix);
+    products.push(produkt);
 
-    this.tmpRepo.Add(this.prfix, produkty);
+    this.tmpRepo.Add(this.prfix, products);
     return true;
   }
 
-  Pobierz(nazwa: string): Product {
-    var produkty = this.tmpRepo.Get(this.prfix);
-    if (produkty.length > 0) {
-      for (let i = 0; i < produkty.length; i++) {
-        if (produkty[i].Nazwa == nazwa) {
-          return produkty[i];
+  Get(name: string): Product {
+    var products = this.tmpRepo.Get(this.prfix);
+    if (products.length > 0) {
+      for (let i = 0; i < products.length; i++) {
+        if (products[i].Name == name) {
+          return products[i];
         }
       }
     }
     return null;
   }
 
-  PobierzDlaUzytkownika(login: string): Array<Product> {
-    var produktyDlaUzytkownika = new Array<Product>();
-    var produkty = this.tmpRepo.Get(this.prfix);
-    if (produkty.length > 0) {
-      for (let i = 0; i < produkty.length; i++) {
-        if (produkty[i].LoginUzytkownika == login) {
-          produktyDlaUzytkownika.push(produkty[i]);
+  GetForUser(login: string): Array<Product> {
+    var productsForUser = new Array<Product>();
+    var products = this.tmpRepo.Get(this.prfix);
+    if (products.length > 0) {
+      for (let i = 0; i < products.length; i++) {
+        if (products[i].Login == login) {
+          productsForUser.push(products[i]);
         }
       }
     }
-    return produktyDlaUzytkownika;
+    return productsForUser;
   }
 
-  PobierzWszystkie(): Array<Product> {
-    var produkty = this.tmpRepo.Get(this.prfix);
-    return produkty;
+  GetAll(): Array<Product> {
+    var products = this.tmpRepo.Get(this.prfix);
+    return products;
   }
 
-  UsunPoNazwie(produkt: Product) {
+  DeleteByName(product: Product) {
     var indexOf;
-    var produkty = this.PobierzWszystkie();
-    for (let i = 0; i < produkty.length; i++) {
+    var products = this.GetAll();
+    for (let i = 0; i < products.length; i++) {
       if (
-        produkty[i].Name == produkt.Name &&
-        produkty[i].Login == produkt.Login
+        products[i].Name == product.Name &&
+        products[i].Login == product.Login
       )
         indexOf = i;
     }
-    produkty.splice(indexOf, 1);
-    this.tmpRepo.Add(this.prfix, produkty);
+    products.splice(indexOf, 1);
+    this.tmpRepo.Add(this.prfix, products);
     return true;
   }
 
-  Edytuj(komenda: ProductEditCommand) {
-    var produkty = this.PobierzWszystkie();
-    var produkt: Product;
+  Edit(command: ProductEditCommand) {
+    var products = this.GetAll();
+    var product: Product;
 
-    for (let i = 0; i < produkty.length; i++) {
+    for (let i = 0; i < products.length; i++) {
       if (
-        produkty[i].Name == komenda.Name &&
-        produkty[i].Login == komenda.Login
+        products[i].Name == command.Name &&
+        products[i].Login == command.Login
       )
-        produkt = produkty[i];
+        product = products[i];
     }
 
-    produkt.Name = komenda.NewName;
-    produkt.Unit = komenda.Unit;
-    produkt.NettoPrice = komenda.NettoPrice;
+    product.Name = command.NewName;
+    product.Unit = command.Unit;
+    product.NettoPrice = command.NettoPrice;
 
-    this.tmpRepo.Add(this.prfix, produkty);
+    this.tmpRepo.Add(this.prfix, products);
     return true;
   }
 }

@@ -12,73 +12,76 @@ import { RegisterCommand } from "../commands/register-command";
   styleUrls: ["./login.component.css"]
 })
 export class LoginComponent implements OnInit {
-  haslo;
-  pokazRejestracje = false;
+  password;
+  showRegistration = false;
   login;
-  nowyLogin;
-  noweHaslo;
-  nrBanku;
-  adres;
-  nip;
-  nazwaFirmy;
-  zalogowany;
+  newLogin;
+  newPassword;
+  accountNumber;
+  address;
+  taxId;
+  companyName;
+  loggedIn;
 
   constructor(
-    public logowanieUzytkownika: UserAuthorizer,
+    public userAuthorizer: UserAuthorizer,
     private router: Router,
     public dialog: MatDialog,
     public snackBar: MatSnackBar
   ) {}
 
-  zaloguj() {
-    var komendaAutoryzacji = new AuthorizeCommand(this.login, this.haslo);
-    var rezultat = this.logowanieUzytkownika.Zaloguj(komendaAutoryzacji);
-    if (rezultat == false) {
+  logIn() {
+    var authorizeCommand = new AuthorizeCommand(this.login, this.password);
+    var result = this.userAuthorizer.LogIn(authorizeCommand);
+    if (result == false) {
       this.snackBar.open("Bład logowania!", "", {
         duration: 2000
       });
     }
   }
-  rejestruj() {
-    var komendaRejestracji = new RegisterCommand(
-      this.nowyLogin,
-      this.noweHaslo,
-      this.nrBanku,
-      this.adres,
-      this.nip,
-      this.nazwaFirmy
-    );
-    var rezultat = this.logowanieUzytkownika.Zarejestruj(komendaRejestracji);
 
-    if (rezultat) {
+  register() {
+    var registerCommand = new RegisterCommand(
+      this.newLogin,
+      this.newPassword,
+      this.accountNumber,
+      this.address,
+      this.taxId,
+      this.companyName
+    );
+    var result = this.userAuthorizer.Register(registerCommand);
+
+    if (result) {
       this.snackBar.open("Zarejestrowano!", "", {
         duration: 2000
       });
-      this.pokazRejestracje = false;
+      this.showRegistration = false;
     } else {
       this.snackBar.open("Nie udało się!", "", {
         duration: 2000
       });
     }
   }
-  wezZalogowanego() {
-    if (this.logowanieUzytkownika.JestZalogowany()) {
-      this.zalogowany = this.logowanieUzytkownika.getCurrentuser().Login;
+
+  getLoggedIn() {
+    if (this.userAuthorizer.IsLogged()) {
+      this.loggedIn = this.userAuthorizer.GetCurrentUser().Login;
       return true;
     } else {
       return false;
     }
   }
 
-  wyloguj() {
-    if (this.logowanieUzytkownika.JestZalogowany()) {
+  logOut() {
+    if (this.userAuthorizer.IsLogged()) {
       this.router.navigate(["dom"]);
-      this.logowanieUzytkownika.Wyloguj();
+      this.userAuthorizer.LogOut();
     }
   }
 
-  idzDoProfilu() {
+  goToProfile() {
     this.router.navigate(["profil"]);
   }
+
   ngOnInit() {}
 }
